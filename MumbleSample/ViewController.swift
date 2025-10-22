@@ -18,6 +18,13 @@ class ViewController: UIViewController {
     private let muteButton = UIButton(type: .system)
     private let deafenButton = UIButton(type: .system)
     private let disconnectButton = UIButton(type: .system)
+    private let tableView = UITableView()
+
+    
+    private var channelItems: [ChannelDisplayItem] = []
+    private var talkingUsers = Set<String>() // 用戶名集合
+
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -61,11 +68,23 @@ class ViewController: UIViewController {
         stack.spacing = 16
         stack.alignment = .center
         stack.translatesAutoresizingMaskIntoConstraints = false
+        
+       
+        self.tableView.translatesAutoresizingMaskIntoConstraints = false
+        self.tableView.delegate = self
+        self.tableView.dataSource = self
+        self.view.addSubview(self.tableView)
 
-        view.addSubview(stack)
+
+        self.view.addSubview(stack)
         NSLayoutConstraint.activate([
-            stack.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            stack.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+            stack.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+            stack.centerYAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 80),
+            
+            self.tableView.topAnchor.constraint(equalTo: stack.bottomAnchor, constant: 16),
+            self.tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            self.tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            self.tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20)
         ])
     }
 
@@ -116,9 +135,59 @@ class ViewController: UIViewController {
                 }
             }
         }
+         
+        connector.onModelChanged = {  [weak self] in
+            guard let self else { return }
+            DispatchQueue.main.async {
+                 self.reloadChannelList()
+             }
+            
+        }
+        
+        connector.onUserTalkStateChanged = { [weak self] user, isTalking in
+            guard let self else { return }
+            if isTalking {
+                self.talkingUsers.insert(user.userName())
+            } else {
+                self.talkingUsers.remove(user.userName())
+            }
+            
+            self.tableView.reloadData()
+        }
+            
+        
+        
         self.connector = connector
         connector.start()
     }
+    
+    private func reloadChannelList() {
+        guard let root = connector?.rootChannel else { return }
+        channelItems = []
+        appendChannel(root, level: 0)
+        self.tableView.reloadData()
+        print(channelItems)
+    }
+    
+    private func appendChannel(_ channel: MKChannel, level: Int) {
+        channelItems.append(ChannelDisplayItem(name: "📁 \(channel.channelName() ?? "")", level: level, isUser: false))
+
+        // 該頻道內的使用者
+        if let users = channel.users() as? [MKUser] {
+            for user in users {
+                channelItems.append(ChannelDisplayItem(name: "👤 \(user.userName() ?? "")", level: level + 1, isUser: true))
+            }
+        }
+
+        // 子頻道
+        if let children = channel.channels() as? [MKChannel] {
+            for child in children {
+                appendChannel(child, level: level + 1)
+            }
+        }
+    }
+
+
 
     @objc private func toggleMute() {
         guard let connector else { return }
@@ -137,5 +206,56 @@ class ViewController: UIViewController {
     @objc private func disconnect() {
         connector?.stop()
         updateButtons(enabled: false)
+    }
+}
+
+extension ViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return channelItems.count
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = UITableViewCell(style: .default, reuseIdentifier: "cell")
+        let item = channelItems[indexPath.row]
+        let indent = String(repeating: "    ", count: item.level)
+        cell.textLabel?.text = indent + item.name
+
+        if item.isUser {
+            if talkingUsers.contains(item.name.replacingOccurrences(of: "👤 ", with: "")) {
+                cell.textLabel?.textColor = .systemGreen
+                cell.textLabel?.font = .boldSystemFont(ofSize: 16)
+            } else {
+                cell.textLabel?.textColor = .label
+                cell.textLabel?.font = .systemFont(ofSize: 16)
+            }
+        } else {
+            cell.textLabel?.textColor = .systemGray
+        }
+        return cell
+    }
+}
+
+
+extension ViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let item = channelItems[indexPath.row]
+        guard !item.isUser else { return } // 只讓頻道可以被選
+
+        // 根據名字找出實際的 channel
+        if let root = connector?.rootChannel {
+            if let target = findChannel(named: item.name.replacingOccurrences(of: "📁 ", with: ""), in: root) {
+                connector?.join(channel: target)
+            }
+        }
+    }
+
+    private func findChannel(named name: String, in channel: MKChannel) -> MKChannel? {
+        if channel.channelName() == name { return channel }
+        for child in (channel.channels() as? [MKChannel]) ?? [] {
+            if let found = findChannel(named: name, in: child) {
+                return found
+            }
+        }
+        return nil
     }
 }

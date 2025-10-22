@@ -20,6 +20,7 @@
 		36E2A4282E9F71CF00687354 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36E2A4272E9F71CF00687354 /* CFNetwork.framework */; };
 		36E2A42A2E9F71D600687354 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36E2A4292E9F71D600687354 /* Security.framework */; };
 		36E2BD252E9F8B6800687354 /* libMumbleKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 36E2BD1B2E9F7F7500687354 /* libMumbleKit.a */; };
+		36E982112EA8B3DB0058AE67 /* ChannelDisplayItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E9820D2EA8B3DA0058AE67 /* ChannelDisplayItem.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -73,6 +74,7 @@
 		36E2A4272E9F71CF00687354 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		36E2A4292E9F71D600687354 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		36E2BD152E9F7F7500687354 /* MumbleKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = MumbleKit.xcodeproj; path = mumblekit/MumbleKit.xcodeproj; sourceTree = "<group>"; };
+		36E9820D2EA8B3DA0058AE67 /* ChannelDisplayItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelDisplayItem.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -147,6 +149,7 @@
 				36E275992E9F4E9900687354 /* SceneDelegate.swift */,
 				36E28F162E9F6CF200687354 /* Mumble-Bridging-Header.h */,
 				36E2759A2E9F4E9900687354 /* ViewController.swift */,
+				36E9820D2EA8B3DA0058AE67 /* ChannelDisplayItem.swift */,
 				3661C3612EA785B3004E7226 /* MumbleConnector.swift */,
 			);
 			path = MumbleSample;
@@ -335,6 +338,7 @@
 				36E275E12E9F4E9900687354 /* SceneDelegate.swift in Sources */,
 				3661C3652EA785B4004E7226 /* MumbleConnector.swift in Sources */,
 				36E275E52E9F4E9900687354 /* ViewController.swift in Sources */,
+				36E982112EA8B3DB0058AE67 /* ChannelDisplayItem.swift in Sources */,
 				36E275E62E9F4E9900687354 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -537,7 +541,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -582,7 +586,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

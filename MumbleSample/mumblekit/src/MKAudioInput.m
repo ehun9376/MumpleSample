@@ -110,7 +110,7 @@
     _settings.enablePreprocessor = YES;
     _settings.transmitType       = MKTransmitTypeVAD;
     _settings.audioPerPacket     = 1;
-    _settings.quality            = 32000; // target bitrate (CBR)
+    _settings.quality            = 48000; // target bitrate (CBR)
 
     _preprocessorState = NULL;
     _micResampler      = NULL;
@@ -126,8 +126,8 @@
     doResetPreprocessor= YES;
 
     // 🔧 內部採樣率 48k / 10ms
-    sampleRate = SAMPLE_RATE;           // 48000
-    frameSize  = SAMPLE_RATE / 100;     // 480 samples / 10ms
+    sampleRate = SAMPLE_RATE;
+    frameSize  = SAMPLE_RATE / 100;
 
     int oerr = 0;
     _opusEncoder = opus_encoder_create(sampleRate, 1, OPUS_APPLICATION_VOIP, &oerr);

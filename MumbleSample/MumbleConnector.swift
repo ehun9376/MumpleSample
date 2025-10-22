@@ -15,7 +15,7 @@ enum ConnectionState {
 final class MumbleConnector: NSObject {
 
     private var connection: MKConnection?
-    private var serverModel: MKServerModel?
+    var serverModel: MKServerModel?
 
     // MARK: - Connection Info
     private let host: String
@@ -30,6 +30,13 @@ final class MumbleConnector: NSObject {
     var onConnectionStateChange: ((ConnectionState) -> Void)?
     private(set) var isMuted: Bool = false
     private(set) var isSelfDeafened: Bool = false
+
+    // 提供 UI 使用的模型入口與更新通知
+    var onModelChanged: (() -> ())?
+    var rootChannel: MKChannel? { serverModel?.rootChannel() }
+    var connectedUser: MKUser? { serverModel?.connectedUser() }
+    var onUserTalkStateChanged: ((MKUser, Bool) -> Void)?
+
 
     // MARK: - Init
     init(host: String,
@@ -47,10 +54,7 @@ final class MumbleConnector: NSObject {
         self.allowSelfSigned = allowSelfSigned
         self.forceTCP = forceTCP
         super.init()
-
-      
     }
-
 
     // MARK: - Public Controls
     func start() {
@@ -99,6 +103,11 @@ final class MumbleConnector: NSObject {
         serverModel?.setSelfMuted(isMuted, andSelfDeafened: deaf)
     }
 
+    // 切換頻道
+    func join(channel: MKChannel) {
+        serverModel?.join(channel)
+    }
+
     // MARK: - Audio Setup
     private func startAudioAfterServerSync() {
         let session = AVAudioSession.sharedInstance()
@@ -136,7 +145,6 @@ final class MumbleConnector: NSObject {
         }
 
         // 綁定連線
-        // 3️⃣ 綁定 connection（雙重：先官方、再直綁 _audioInput）
         if let conn = connection {
             print("🔗 Binding MKConnection to MKAudioInput via selector")
             MKAudio.shared().setMainConnectionFor(conn)
@@ -147,21 +155,18 @@ final class MumbleConnector: NSObject {
             }
         }
 
-        // 4️⃣ 關閉靜音 + 強制傳輸
+        // 取消靜音與強制傳輸
         MKAudio.shared().setSelfMuted(false)
         MKAudio.shared().setForceTransmit(true)
         serverModel?.setSelfMuted(false, andSelfDeafened: false)
 
-        // 5️⃣ 額外印出 encoder 狀態線索（可觀察 VAD/能量）
         print("🎚 speechProb=\(MKAudio.shared().speechProbablity()) peak=\(MKAudio.shared().peakCleanMic())")
 
-        
         if let input = MKAudio.shared().value(forKey: "_audioInput") as? NSObject {
             input.setValue(true, forKey: "_forceTransmit")
             print("🟢 ForceTransmit flag manually set")
         }
-        
-        
+
         if let ai = MKAudio.shared().value(forKey: "_audioInput") as? NSObject,
            let conn = connection {
             ai.perform(NSSelectorFromString("setMainConnectionForAudio:"), with: conn)
@@ -169,8 +174,11 @@ final class MumbleConnector: NSObject {
         }
 
         onConnectionStateChange?(.connected)
+        // 初次同步完成後，通知 UI 可以讀取頻道/使用者
+        DispatchQueue.main.async { [weak self] in
+            self?.onModelChanged?()
+        }
     }
-
 }
 
 // MARK: - MKConnectionDelegate
@@ -229,5 +237,20 @@ extension MumbleConnector: MKServerModelDelegate {
     func serverModelDisconnected(_ model: MKServerModel!) {
         print("serverModelDisconnected")
         onConnectionStateChange?(.disconnected)
+    }
+    
+    func serverModel(_ model: MKServerModel!, userMoved user: MKUser!, to chan: MKChannel!, from prevChan: MKChannel!, by mover: MKUser!) {
+        DispatchQueue.main.async { [weak self] in
+            self?.onModelChanged?()
+        }
+    }
+    
+    func serverModel(_ model: MKServerModel!, userTalkStateChanged user: MKUser!) {
+        print("user.talkState: \(user.talkState())")
+        
+        let isTalking = user.talkState() == MKTalkState(rawValue: 1)
+        DispatchQueue.main.async { [weak self] in
+            self?.onUserTalkStateChanged?(user, isTalking)
+        }
     }
 }
