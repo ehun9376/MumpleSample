@@ -291,6 +291,8 @@ static void MKConnectionUDPCallback(CFSocketRef sock, CFSocketCallBackType type,
 }
 
 - (void) disconnect {
+    [self setDelegate:nil];
+    [self setMessageHandler:nil];
     [self stopConnectionThread];
     while ([self isExecuting] && ![self isFinished]) {
         // Wait for the thread to be done...

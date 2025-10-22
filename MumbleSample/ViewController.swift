@@ -132,6 +132,9 @@ class ViewController: UIViewController {
                     self?.deafenButton.isSelected = false
                 case .disconnected:
                     self?.updateButtons(enabled: false)
+                    self?.talkingUsers.removeAll()
+                    self?.channelItems = []
+                    self?.tableView.reloadData()
                 }
             }
         }

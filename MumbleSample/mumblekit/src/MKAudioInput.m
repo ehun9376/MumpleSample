@@ -366,9 +366,8 @@
     short *frame = resampled ? psOut : psMic;
 
     // -------- 1) 先全域衰減 + 簡易軟式限幅，避免爆音/失真 --------
-    // 0.35f：保守輸入；若仍爆可調至 0.30f
     for (int i = 0; i < frameSize; i++) {
-        float s = (float)frame[i] * 0.35f;
+        float s = (float)frame[i] * 0.7f;
 
         // 軟式限幅：超過 ~30000 以比例壓回，避免硬剪裁破音
         if (s > 30000.0f) {

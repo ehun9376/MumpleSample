@@ -220,6 +220,7 @@ extension MumbleConnector: MKConnectionDelegate {
         }
         onConnectionStateChange?(.disconnected)
     }
+    
 }
 
 // MARK: - MKServerModelDelegate
@@ -233,6 +234,13 @@ extension MumbleConnector: MKServerModelDelegate {
             self?.startAudioAfterServerSync()
         }
     }
+    
+    func serverModel(_ model: MKServerModel!, userLeft user: MKUser!) {
+        DispatchQueue.main.async { [weak self] in
+            self?.onModelChanged?()
+        }
+    }
+    
 
     func serverModelDisconnected(_ model: MKServerModel!) {
         print("serverModelDisconnected")
