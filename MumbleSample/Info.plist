@@ -8,6 +8,8 @@
 		<false/>
 		<key>UISceneConfigurations</key>
 		<dict>
+            <key>NSMicrophoneUsageDescription</key>
+            <string>需要麥克風以傳送語音</string>
 			<key>UIWindowSceneSessionRoleApplication</key>
 			<array>
 				<dict>
