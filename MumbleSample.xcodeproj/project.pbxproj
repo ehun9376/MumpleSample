@@ -533,6 +533,7 @@
 				HEADER_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/MumbleSample/mumblekit/src/**",
 					"$(PROJECT_DIR)/MumbleSample/mumblekit/src/MumbleKit/**",
+					"$(PROJECT_DIR)/MumbleSample/mumblekit/3rdparty/protobuf/src/runtime/Classes/**",
 				);
 				INFOPLIST_FILE = MumbleSample/Info.plist;
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = VOIP;
@@ -578,6 +579,7 @@
 				HEADER_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/MumbleSample/mumblekit/src/**",
 					"$(PROJECT_DIR)/MumbleSample/mumblekit/src/MumbleKit/**",
+					"$(PROJECT_DIR)/MumbleSample/mumblekit/3rdparty/protobuf/src/runtime/Classes/**",
 				);
 				INFOPLIST_FILE = MumbleSample/Info.plist;
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = VOIP;

@@ -113,7 +113,7 @@
 		2845A69C132D99550034D631 = {
 			isa = PBXGroup;
 			children = (
-				2845A6AC132D99550034D631 /* ProtocolBuffers */,
+				2845A6C6132D99D30034D631 /* Sources */,
 				2845A6A9132D99550034D631 /* Frameworks */,
 				2845A6A8132D99550034D631 /* Products */,
 				28190CF0150D5D4900E07613 /* Build Configurations */,
@@ -136,14 +136,6 @@
 				2845A6BB132D99600034D631 /* Mac Frameworks */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		2845A6AC132D99550034D631 /* ProtocolBuffers */ = {
-			isa = PBXGroup;
-			children = (
-				2845A6C6132D99D30034D631 /* Sources */,
-			);
-			path = ProtocolBuffers;
 			sourceTree = "<group>";
 		};
 		2845A6BB132D99600034D631 /* Mac Frameworks */ = {

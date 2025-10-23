@@ -725,6 +725,24 @@ out:
     if (nwritten != expectedLength) {
         NSLog(@"MKConnection: write error, wrote %li, expected %lu", (long int)nwritten, (unsigned long)expectedLength);
     }
+    
+    UInt16 type1;
+    [msg getBytes:&type1 length:sizeof(UInt16)];
+    type1 = CFSwapInt16BigToHost(type1);
+
+    UInt32 len;
+    [msg getBytes:&len range:NSMakeRange(2, sizeof(UInt32))];
+    len = CFSwapInt32BigToHost(len);
+
+    NSData *protobufData = [msg subdataWithRange:NSMakeRange(6, len)];
+
+    if (type1 == ChannelStateMessage) {
+        MPChannelState *decoded = [MPChannelState parseFromData:protobufData];
+        NSLog(@"📦 ChannelState name=%@ parent=%u temp=%d",
+              decoded.name, decoded.parent, decoded.temporary);
+    }
+
+    
     [msg release];
 }
 

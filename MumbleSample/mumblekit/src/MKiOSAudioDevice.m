@@ -84,7 +84,6 @@ static OSStatus inputCallback(void *udata,
             short a = (v >= 0) ? v : -v;
             if (a > peak) peak = a;
         }
-        NSLog(@"[DBG] inputCallback frames=%u peak=%d", (unsigned)nframes, (int)peak);
     }
     
     return noErr;

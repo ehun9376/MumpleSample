@@ -458,8 +458,7 @@
         [outputBuffer release];
 
         if ((frameCounter % 10) == 0) {
-            NSLog(@"🎚 Mic: %.1f dB, prob=%.2f, agc=%d, sent=%dB",
-                  _peakCleanMic, _speechProbability, agcGain, len);
+         
         }
     }
 

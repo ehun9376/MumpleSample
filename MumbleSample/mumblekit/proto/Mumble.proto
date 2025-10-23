@@ -1,5 +1,4 @@
-import "google/protobuf/objectivec-descriptor.proto";
-option (google.protobuf.objectivec_file_options).class_prefix = "MP";
+
 package MumbleProto;
 
 option optimize_for = SPEED;

@@ -15,9 +15,6 @@
 #import "mumblekit/src/MumbleKit/MKUser.h"
 #import "mumblekit/src/MumbleKit/MKVersion.h"
 #import "mumblekit/src/MumbleKit/MKTextMessage.h"
-
-
-
-
+#import "mumblekit/proto/Mumble.pb.h"
 
 #endif /* Mumble_Bridging_Header_h */

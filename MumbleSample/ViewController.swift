@@ -18,6 +18,7 @@ class ViewController: UIViewController {
     private let muteButton = UIButton(type: .system)
     private let deafenButton = UIButton(type: .system)
     private let disconnectButton = UIButton(type: .system)
+    private let createChannelButton = UIButton(type: .system)
     private let tableView = UITableView()
 
     
@@ -62,8 +63,13 @@ class ViewController: UIViewController {
 
         disconnectButton.setTitle("Disconnect", for: .normal)
         disconnectButton.addTarget(self, action: #selector(disconnect), for: .touchUpInside)
+        
+        createChannelButton.setTitle("創立新頻道", for: .normal)
+        createChannelButton.addTarget(self, action: #selector(createChannel), for: .touchUpInside)
+        
+        
 
-        let stack = UIStackView(arrangedSubviews: [connectButton, muteButton, deafenButton, disconnectButton])
+        let stack = UIStackView(arrangedSubviews: [connectButton, muteButton, deafenButton, createChannelButton, disconnectButton])
         stack.axis = .vertical
         stack.spacing = 16
         stack.alignment = .center
@@ -79,7 +85,7 @@ class ViewController: UIViewController {
         self.view.addSubview(stack)
         NSLayoutConstraint.activate([
             stack.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-            stack.centerYAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 80),
+            stack.centerYAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 95),
             
             self.tableView.topAnchor.constraint(equalTo: stack.bottomAnchor, constant: 16),
             self.tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
@@ -117,7 +123,7 @@ class ViewController: UIViewController {
         let connector = MumbleConnector(
             host: "uat-voip.1111job.app",
             port: 64738,
-            username: "Ehun dev",
+            username: "Ehun dev8",
             password: "52@11118888",
             accessTokens: nil,
             allowSelfSigned: false,
@@ -173,12 +179,12 @@ class ViewController: UIViewController {
     }
     
     private func appendChannel(_ channel: MKChannel, level: Int) {
-        channelItems.append(ChannelDisplayItem(name: "📁 \(channel.channelName() ?? "")", level: level, isUser: false))
+        channelItems.append(ChannelDisplayItem(name: "📁 \(channel.channelName() ?? "")", level: level, isUser: false, channel: channel))
 
         // 該頻道內的使用者
         if let users = channel.users() as? [MKUser] {
             for user in users {
-                channelItems.append(ChannelDisplayItem(name: "👤 \(user.userName() ?? "")", level: level + 1, isUser: true))
+                channelItems.append(ChannelDisplayItem(name: "👤 \(user.userName() ?? "")", level: level + 1, isUser: true, channel: channel))
             }
         }
 
@@ -209,6 +215,16 @@ class ViewController: UIViewController {
     @objc private func disconnect() {
         connector?.stop()
         updateButtons(enabled: false)
+    }
+    
+    @objc private func createChannel() {
+        
+        
+        
+        if let first = self.channelItems.first(where: {$0.name.contains("openchannel")}) {
+            connector?.createChannel(name: "新頻道", parent: first.channel)
+        }
+        
     }
 }
 

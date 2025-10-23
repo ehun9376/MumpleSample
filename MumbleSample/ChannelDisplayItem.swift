@@ -9,4 +9,5 @@ struct ChannelDisplayItem {
     let name: String
     let level: Int
     let isUser: Bool
+    let channel: MKChannel
 }
