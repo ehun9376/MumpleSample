@@ -67,10 +67,6 @@ class CallKitManager: NSObject {
 
     // MARK: - 主動撥出（如要做類似 LINE 主叫方）
     func startOutgoing(to display: String,
-                       host: String,
-                       port: UInt,
-                       username: String,
-                       password: String?,
                        channelName: String?) {
         let uuid = UUID()
         let handle = CXHandle(type: .generic, value: display)
