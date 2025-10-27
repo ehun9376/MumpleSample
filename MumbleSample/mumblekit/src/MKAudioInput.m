@@ -140,7 +140,7 @@
     opus_encoder_ctl(_opusEncoder, OPUS_SET_BITRATE(_settings.quality));
     opus_encoder_ctl(_opusEncoder, OPUS_SET_SIGNAL(OPUS_SIGNAL_VOICE));
     opus_encoder_ctl(_opusEncoder, OPUS_SET_COMPLEXITY(5));
-    opus_encoder_ctl(_opusEncoder, OPUS_SET_GAIN(-6)); // 減少 Opus 前端增益
+    opus_encoder_ctl(_opusEncoder, OPUS_SET_GAIN(0));
     opus_encoder_ctl(_opusEncoder, OPUS_SET_DTX(1));                 // 靜音時節流
     opus_encoder_ctl(_opusEncoder, OPUS_SET_VBR_CONSTRAINT(1));  // 穩定碼率
     opus_encoder_ctl(_opusEncoder, OPUS_SET_INBAND_FEC(1));      // 前向錯誤修復（FEC）
@@ -367,7 +367,7 @@
 
     // -------- 1) 先全域衰減 + 簡易軟式限幅，避免爆音/失真 --------
     for (int i = 0; i < frameSize; i++) {
-        float s = (float)frame[i] * 0.7f;
+        float s = (float)frame[i];
 
         // 軟式限幅：超過 ~30000 以比例壓回，避免硬剪裁破音
         if (s > 30000.0f) {

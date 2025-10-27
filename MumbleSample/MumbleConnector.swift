@@ -16,6 +16,7 @@ protocol ConnectorProtocol {
     var connection: MKConnection? { get set }
     var serverModel: MKServerModel? { get set }
     var rootChannel: MKChannel? { get }
+    var openChannel: MKChannel? { get }
     /// 有新增移除頻道、使用者加入、使用者移動頻道等事件時觸發
     var onModelChanged: (() -> ())? { get set }
     /// 使用者講話狀態改變時觸發
@@ -50,7 +51,7 @@ class MumbleConnector: NSObject, ConnectorProtocol {
     private var port: UInt = 64738
     private var username: String = UUID().uuidString.prefix(8).description
     private var password: String = "52@11118888"
-    private var targetChannelID: String?
+    private var targetChannelID: UInt?
 
 
     // MARK: - State
@@ -66,12 +67,36 @@ class MumbleConnector: NSObject, ConnectorProtocol {
     /// 連線狀態改變時觸發
     var onConnectionStateChange: ((ConnectionState) -> Void)?
 
-    var rootChannel: MKChannel? { serverModel?.rootChannel() }
-
-    // MARK: - Init
+    var openChannel: MKChannel? {
+      return (serverModel?.rootChannel().channels() as? [MKChannel])?.first(where: { channel in
+            return channel.channelName()?.contains("openchannel") ?? false
+          
+        })
+    }
     
-    func startCall(targetChannelID: String) {
-        self.targetChannelID = targetChannelID
+    var rootChannel: MKChannel? {
+        return serverModel?.rootChannel()
+    }
+    
+    var newChannelName: String?
+    
+    var serverReady: Bool = false {
+        didSet {
+            self.startAudioAfterServerSync()
+        }
+    }
+    
+    var callKitReady: Bool = false {
+        didSet {
+            self.startAudioAfterServerSync()
+        }
+    }
+        
+
+
+    
+    func connectCall(answerChannelID: UInt) {
+        self.targetChannelID = answerChannelID
         self.start()
     }
 
@@ -105,14 +130,28 @@ class MumbleConnector: NSObject, ConnectorProtocol {
 
 
     func stop() {
+        print("🛑 Stopping Mumble connection...")
+
         if MKAudio.shared().isRunning() {
             MKAudio.shared().stop()
+            print("🔇 MKAudio stopped")
         }
+
+        var settings = MKAudioSettings()
+        MKAudio.shared().read(&settings)
+        MKAudio.shared().update(&settings)
+
+ 
+
         connection?.disconnect()
         connection = nil
+        self.onConnectionStateChange?(.disconnected)
         serverModel = nil
-        onConnectionStateChange?(.disconnected)
+        callKitReady = false
+        serverReady = false
+        print("🧹 Connection + state reset complete")
     }
+
 
     func setMuted(_ muted: Bool) {
         isMuted = muted
@@ -131,38 +170,21 @@ class MumbleConnector: NSObject, ConnectorProtocol {
     }
 
     // MARK: - Audio Setup
-    private func startAudioAfterServerSync() {
+    func startAudioAfterServerSync() {
+        guard self.serverReady, self.callKitReady else {
+            print("⏳ 等待 Server 與 CallKit 準備完成...")
+            return
+        }
         // 啟動音訊
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
-            
-            let session = AVAudioSession.sharedInstance()
-            
-            do {
-                try session.setCategory(.playAndRecord,
-                                        options: [.defaultToSpeaker, .allowBluetoothHFP, .mixWithOthers])
-                try session.setPreferredSampleRate(48000)
-                try session.setActive(true)
-                print("✅ AVAudioSession active, inputAvailable:", session.isInputAvailable)
-            } catch {
-                print("❌ AVAudioSession setup failed:", error)
-            }
-            
-            let route = session.currentRoute
-            for input in route.inputs {
-                print("🎙 Input port:", input.portName, input.portType.rawValue)
-            }
-            for output in route.outputs {
-                print("🔈 Output port:", output.portName, output.portType.rawValue)
-            }
             
             // 音訊參數設定
             var settings = MKAudioSettings()
             MKAudio.shared().read(&settings)
             settings.enableEchoCancellation = false
             settings.transmitType = MKTransmitTypeContinuous
-            settings.preferReceiverOverSpeaker = false
-            settings.enableSideTone = false
+            settings.enableSideTone = true
             MKAudio.shared().update(&settings)
             MKAudio.shared().setForceTransmit(true)
             
@@ -173,11 +195,7 @@ class MumbleConnector: NSObject, ConnectorProtocol {
             if let conn = connection {
                 MKAudio.shared().setMainConnectionFor(conn)
             }
-            
-            
-            self.onConnectionStateChange?(.connected)
-            self.onModelChanged?()
-            self.joinChannelByIDIfNeed()
+   
         }
         
     }
@@ -185,23 +203,61 @@ class MumbleConnector: NSObject, ConnectorProtocol {
     func joinChannelByIDIfNeed() {
         guard let model = self.serverModel,
               let channelID = self.targetChannelID,
-              !channelID.isEmpty,
-              let channel = model.channel(withId: UInt(channelID) ?? 0) else { return }
+              let channel = model.channel(withId: channelID) else { return }
         self.join(channel: channel)
     }
 
-        
     
-    func createChannel(name: String, parent: MKChannel? = nil) {
+    func makeCallWithCreateAChannel(to user: String) {
+        MumbleConnector.shared.stop()
+        let uuid = UUID().uuidString
+        self.newChannelName = uuid
+        print("📡 準備建立新頻道：\(uuid)")
+        self.start()
+    }
+    
+    private func makeCall(channelID: UInt) {
+        CallKitManager.shared.startOutgoing(to: "Other", channelID: channelID)
+    }
+    
+    private func createAndJoinChannelIfNeed() {
         
         guard let model = self.serverModel else { return }
-
-        model.createChannel(withName: name, parent: parent, temporary: true)
+        guard let channelName = self.newChannelName else { return }
+        print("🧱 嘗試建立頻道：\(channelName)")
+        model.createChannel(withName: channelName, parent: self.openChannel, temporary: true)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
+            guard let self = self else { return }
+            guard let channel = self.findChannelByName(channel: self.openChannel, channelName: channelName) else { return }
+            self.join(channel: channel)
+            self.makeCall(channelID: channel.channelId())
+        }
+    }
+    
+    private func findChannelByName(channel: MKChannel?, channelName: String) -> MKChannel? {
+        guard let channels = channel?.channels() as? [MKChannel] else {
+            return nil
+        }
+        
+        for channel in channels {
+            if channel.channelName() == channelName {
+                return channel
+            }
+            
+            if let channels = channel.channels() as? [MKChannel],
+                !channels.isEmpty,
+               let found = findChannelByName(channel: channel, channelName: channelName) {
+                return found
+            }
+        }
+        return nil
         
     }
     
     
-
+    
+    
 }
 
 // MARK: - MKConnectionDelegate
@@ -232,6 +288,7 @@ extension MumbleConnector: MKConnectionDelegate {
 
     func connection(_ conn: MKConnection!, unableToConnectWithError err: Error!) {
         print("unableToConnectWithError: \(err.localizedDescription)")
+        CallKitManager.shared.endCall()
         onConnectionStateChange?(.disconnected)
     }
 
@@ -241,6 +298,7 @@ extension MumbleConnector: MKConnectionDelegate {
         } else {
             print("closed normally")
         }
+        CallKitManager.shared.endCall()
         onConnectionStateChange?(.disconnected)
     }
 
@@ -269,11 +327,16 @@ extension MumbleConnector: MKServerModelDelegate {
 
     func serverModel(_ model: MKServerModel!, joinedServerAs user: MKUser!, withWelcome msg: MKTextMessage!) {
 
+        
+        self.serverReady = true
+        self.onConnectionStateChange?(.connected)
+        self.onModelChanged?()
+        self.startAudioAfterServerSync()
+        self.joinChannelByIDIfNeed()
+        self.createAndJoinChannelIfNeed()
         if user.userId() == 0 {
             model.registerConnectedUser()
         }
-  
-        self.startAudioAfterServerSync()
         
     }
 

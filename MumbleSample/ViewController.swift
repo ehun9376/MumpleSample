@@ -18,7 +18,7 @@ class ViewController: UIViewController {
     private let muteButton = UIButton(type: .system)
     private let deafenButton = UIButton(type: .system)
     private let disconnectButton = UIButton(type: .system)
-    private let createChannelButton = UIButton(type: .system)
+    private let callOtherButton = UIButton(type: .system)
     private let tableView = UITableView()
 
     
@@ -56,12 +56,13 @@ class ViewController: UIViewController {
         disconnectButton.setTitle("Disconnect", for: .normal)
         disconnectButton.addTarget(self, action: #selector(disconnect), for: .touchUpInside)
         
-        createChannelButton.setTitle("創立新頻道", for: .normal)
-        createChannelButton.addTarget(self, action: #selector(createChannel), for: .touchUpInside)
+        
+        callOtherButton.setTitle("打給別人(Mock)", for: .normal)
+        callOtherButton.addTarget(self, action: #selector(callOther), for: .touchUpInside)
         
         
 
-        let stack = UIStackView(arrangedSubviews: [connectButton, muteButton, deafenButton, createChannelButton, disconnectButton])
+        let stack = UIStackView(arrangedSubviews: [connectButton, muteButton, deafenButton,  disconnectButton, callOtherButton])
         stack.axis = .vertical
         stack.spacing = 16
         stack.alignment = .center
@@ -77,7 +78,7 @@ class ViewController: UIViewController {
         self.view.addSubview(stack)
         NSLayoutConstraint.activate([
             stack.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-            stack.centerYAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 95),
+            stack.centerYAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 120),
             
             self.tableView.topAnchor.constraint(equalTo: stack.bottomAnchor, constant: 16),
             self.tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
@@ -204,14 +205,10 @@ class ViewController: UIViewController {
         updateButtons(enabled: false)
     }
     
-    @objc private func createChannel() {
-        
-        
-        
-        if let first = self.channelItems.first(where: {$0.name.contains("openchannel")}) {
-            connector.createChannel(name: "新頻道", parent: first.channel)
-        }
-        
+  
+    
+    @objc private func callOther() {
+        connector.makeCallWithCreateAChannel(to: "Other")
     }
 }
 
@@ -224,8 +221,8 @@ extension ViewController: UITableViewDataSource {
         let cell = UITableViewCell(style: .default, reuseIdentifier: "cell")
         let item = channelItems[indexPath.row]
         let indent = String(repeating: "    ", count: item.level)
-        cell.textLabel?.text = indent + item.name + "ID: \(item.channel.channelId())"
-
+        cell.textLabel?.text = indent + item.name + "  ID: \(item.channel.channelId())"
+        cell.textLabel?.numberOfLines = 0
         if item.isUser {
             if talkingUsers.contains(item.name.replacingOccurrences(of: "👤 ", with: "")) {
                 cell.textLabel?.textColor = .systemGreen

@@ -16,11 +16,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
         // 啟動 VoIP Push（取得 VoIP token）
+        _ = CallKitManager.shared // 提前建立 provider
+
         VoIPPushManager.shared.start()
 
         // 音訊類別（CallKit 啟用後也會交由你的音訊處理）
-        try? AVAudioSession.sharedInstance().setCategory(.playAndRecord,
-                                                         options: [.defaultToSpeaker, .allowBluetoothHFP, .mixWithOthers])
+        
+        let session = AVAudioSession.sharedInstance()
+        
+        do {
+            try session.setCategory(.playAndRecord,
+                                    options: [.allowBluetoothHFP, .mixWithOthers])
+            try session.setPreferredSampleRate(48000)
+            print("✅ AVAudioSession active, inputAvailable:", session.isInputAvailable)
+        } catch {
+            print("❌ AVAudioSession setup failed:", error)
+        }
+        
+
 
         // 1) 申請通知權限（一般 APNs）
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, err in

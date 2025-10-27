@@ -27,10 +27,8 @@ extension VoIPPushManager: PKPushRegistryDelegate {
         let token = pushCredentials.token.map { String(format: "%02.2hhx", $0) }.joined()
 
         print("📲 VoIP token: \(token)")
-        // 上傳 token 到你的伺服器
     }
 
-    // App 在前景/背景/未開啟時都會走這裡（iOS 13+ 要在幾秒內呼叫 CallKit）
     func pushRegistry(_ registry: PKPushRegistry,
                       didReceiveIncomingPushWith payload: PKPushPayload,
                       for type: PKPushType,
@@ -38,19 +36,16 @@ extension VoIPPushManager: PKPushRegistryDelegate {
 
         let dict = payload.dictionaryPayload
         let caller = (dict["caller"] as? String) ?? "Unknown"
-        let channelID = dict["channelID"] as? String
+        let channelID = dict["channelID"] as? UInt ?? 0
 
-        // 顯示全螢幕來電畫面
         CallKitManager.shared.reportIncoming(from: caller,
                                              channelID: channelID)
 
         completion()
     }
 
-    // iOS 13+ 建議實作（處理重複/過時的推播）
     func pushRegistry(_ registry: PKPushRegistry,
                       didInvalidatePushTokenFor type: PKPushType) {
         print("⚠️ VoIP token invalidated")
-        // 通知伺服器刪除舊 token
     }
 }
