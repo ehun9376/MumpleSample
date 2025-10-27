@@ -9,9 +9,9 @@ import UIKit
 import AVFoundation
 
 class ViewController: UIViewController {
+    
+    let connector = MumbleConnector.shared
 
-    // 保留強參考，避免連線物件被釋放
-    private var connector: MumbleConnector?
 
     // 簡易 UI
     private let connectButton = UIButton(type: .system)
@@ -31,21 +31,13 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .white
 
-        setupUI()
-        updateButtons(enabled: false)
+        self.setupUI()
+        self.updateButtons(enabled: false)
 
         // 麥克風權限
-        requestMicPermissionIfNeeded()
-        
-        NotificationCenter.default.addObserver(
-            forName: AVAudioSession.interruptionNotification,
-            object: AVAudioSession.sharedInstance(),
-            queue: .main
-        ) { notif in
-            print("⚠️ AudioSession interruption:", notif.userInfo ?? [:])
-            try? AVAudioSession.sharedInstance().setActive(true)
-        }
-
+        self.requestMicPermissionIfNeeded()
+        self.setupConnector()
+  
     }
 
     private func setupUI() {
@@ -114,42 +106,33 @@ class ViewController: UIViewController {
             break
         }
     }
+    
+    func setupConnector() {
+        
 
-    @objc private func connectToMumble() {
-        // 若已有連線，先中止
-        connector?.stop()
-        updateButtons(enabled: false)
-
-        let connector = MumbleConnector(
-            host: "uat-voip.1111job.app",
-            port: 64738,
-            username: "Ehun dev8",
-            password: "52@11118888",
-            accessTokens: nil,
-            allowSelfSigned: false,
-            forceTCP: true
-        )
         connector.onConnectionStateChange = { [weak self] state in
-            DispatchQueue.main.async {
+            DispatchQueue.main.async {  [weak self] in
+                guard let self else { return }
                 switch state {
                 case .connected:
-                    self?.updateButtons(enabled: true)
-                    self?.muteButton.isSelected = false
-                    self?.deafenButton.isSelected = false
+                    self.updateButtons(enabled: true)
+                    self.muteButton.isSelected = false
+                    self.deafenButton.isSelected = false
                 case .disconnected:
-                    self?.updateButtons(enabled: false)
-                    self?.talkingUsers.removeAll()
-                    self?.channelItems = []
-                    self?.tableView.reloadData()
+                    self.updateButtons(enabled: false)
+                    self.talkingUsers.removeAll()
+                    self.channelItems = []
+                    self.tableView.reloadData()
                 }
             }
         }
          
         connector.onModelChanged = {  [weak self] in
             guard let self else { return }
-            DispatchQueue.main.async {
+            DispatchQueue.main.async {  [weak self] in
+                guard let self else { return }
                  self.reloadChannelList()
-             }
+            }
             
         }
         
@@ -160,18 +143,23 @@ class ViewController: UIViewController {
             } else {
                 self.talkingUsers.remove(user.userName())
             }
-            
-            self.tableView.reloadData()
+            DispatchQueue.main.async { [weak self] in
+                guard let self else { return }
+                self.tableView.reloadData()
+            }
         }
-            
-        
-        
-        self.connector = connector
-        connector.start()
+    }
+    
+
+    @objc private func connectToMumble() {
+        // 若已有連線，先中止
+        self.updateButtons(enabled: false)
+        self.connector.stop()
+        self.connector.start()
     }
     
     private func reloadChannelList() {
-        guard let root = connector?.rootChannel else { return }
+        guard let root = connector.rootChannel else { return }
         channelItems = []
         appendChannel(root, level: 0)
         self.tableView.reloadData()
@@ -179,12 +167,12 @@ class ViewController: UIViewController {
     }
     
     private func appendChannel(_ channel: MKChannel, level: Int) {
-        channelItems.append(ChannelDisplayItem(name: "📁 \(channel.channelName() ?? "")", level: level, isUser: false, channel: channel))
+        channelItems.append(ChannelDisplayItem(name: channel.channelName() ?? "", level: level, isUser: false, channel: channel))
 
         // 該頻道內的使用者
         if let users = channel.users() as? [MKUser] {
             for user in users {
-                channelItems.append(ChannelDisplayItem(name: "👤 \(user.userName() ?? "")", level: level + 1, isUser: true, channel: channel))
+                channelItems.append(ChannelDisplayItem(name: user.userName() ?? "", level: level + 1, isUser: true, channel: channel))
             }
         }
 
@@ -199,21 +187,20 @@ class ViewController: UIViewController {
 
 
     @objc private func toggleMute() {
-        guard let connector else { return }
         let newMuted = !connector.isMuted
         connector.setMuted(newMuted)
         muteButton.isSelected.toggle()
     }
 
     @objc private func toggleDeafen() {
-        guard let connector else { return }
         let newDeaf = !connector.isSelfDeafened
         connector.setSelfDeafened(newDeaf)
         deafenButton.isSelected.toggle()
     }
 
     @objc private func disconnect() {
-        connector?.stop()
+        CallKitManager.shared.endCall()
+        connector.stop()
         updateButtons(enabled: false)
     }
     
@@ -222,7 +209,7 @@ class ViewController: UIViewController {
         
         
         if let first = self.channelItems.first(where: {$0.name.contains("openchannel")}) {
-            connector?.createChannel(name: "新頻道", parent: first.channel)
+            connector.createChannel(name: "新頻道", parent: first.channel)
         }
         
     }
@@ -237,7 +224,7 @@ extension ViewController: UITableViewDataSource {
         let cell = UITableViewCell(style: .default, reuseIdentifier: "cell")
         let item = channelItems[indexPath.row]
         let indent = String(repeating: "    ", count: item.level)
-        cell.textLabel?.text = indent + item.name
+        cell.textLabel?.text = indent + item.name + "ID: \(item.channel.channelId())"
 
         if item.isUser {
             if talkingUsers.contains(item.name.replacingOccurrences(of: "👤 ", with: "")) {
@@ -248,7 +235,7 @@ extension ViewController: UITableViewDataSource {
                 cell.textLabel?.font = .systemFont(ofSize: 16)
             }
         } else {
-            cell.textLabel?.textColor = .systemGray
+            cell.textLabel?.textColor = .systemGray 
         }
         return cell
     }
@@ -261,9 +248,9 @@ extension ViewController: UITableViewDelegate {
         guard !item.isUser else { return } // 只讓頻道可以被選
 
         // 根據名字找出實際的 channel
-        if let root = connector?.rootChannel {
-            if let target = findChannel(named: item.name.replacingOccurrences(of: "📁 ", with: ""), in: root) {
-                connector?.join(channel: target)
+        if let root = connector.rootChannel {
+            if let target = findChannel(named: item.name, in: root) {
+                connector.join(channel: target)
             }
         }
     }

@@ -12,49 +12,69 @@ enum ConnectionState {
     case disconnected
 }
 
-final class MumbleConnector: NSObject {
+protocol ConnectorProtocol {
+    var connection: MKConnection? { get set }
+    var serverModel: MKServerModel? { get set }
+    var rootChannel: MKChannel? { get }
+    /// 有新增移除頻道、使用者加入、使用者移動頻道等事件時觸發
+    var onModelChanged: (() -> ())? { get set }
+    /// 使用者講話狀態改變時觸發
+    var onUserTalkStateChanged: ((MKUser, Bool) -> ())? { get set }
+    /// 連線狀態改變時觸發
+    var onConnectionStateChange: ((ConnectionState) -> Void)? { get set }
+    ///啟動連線
+    func start()
+    /// 停止連線
+    func stop()
+    /// 靜音/取消靜音
+    func setMuted(_ muted: Bool)
+    /// 自我靜音/取消自我靜音
+    func setSelfDeafened(_ deaf: Bool)
+    /// 切換頻道
+    func join(channel: MKChannel)
+    
 
-    private var connection: MKConnection?
+}
+
+
+class MumbleConnector: NSObject, ConnectorProtocol {
+    
+    static let shared = MumbleConnector()
+
+    var connection: MKConnection?
+    
     var serverModel: MKServerModel?
 
     // MARK: - Connection Info
-    private let host: String
-    private let port: UInt
-    private let username: String
-    private let password: String?
-    private let accessTokens: [String]?
-    private let allowSelfSigned: Bool
-    private let forceTCP: Bool
+    private var host: String = "uat-voip.1111job.app"
+    private var port: UInt = 64738
+    private var username: String = UUID().uuidString.prefix(8).description
+    private var password: String = "52@11118888"
+    private var targetChannelID: String?
+
 
     // MARK: - State
-    var onConnectionStateChange: ((ConnectionState) -> Void)?
     private(set) var isMuted: Bool = false
     private(set) var isSelfDeafened: Bool = false
 
-    // 提供 UI 使用的模型入口與更新通知
+    /// 有新增移除頻道、使用者加入、使用者移動頻道等事件時觸發
     var onModelChanged: (() -> ())?
-    var rootChannel: MKChannel? { serverModel?.rootChannel() }
-    var connectedUser: MKUser? { serverModel?.connectedUser() }
-    var onUserTalkStateChanged: ((MKUser, Bool) -> Void)?
+    
+    /// 使用者講話狀態改變時觸發
+    var onUserTalkStateChanged: ((MKUser, Bool) -> ())?
+    
+    /// 連線狀態改變時觸發
+    var onConnectionStateChange: ((ConnectionState) -> Void)?
 
+    var rootChannel: MKChannel? { serverModel?.rootChannel() }
 
     // MARK: - Init
-    init(host: String,
-         port: UInt = 64738,
-         username: String,
-         password: String? = nil,
-         accessTokens: [String]? = nil,
-         allowSelfSigned: Bool = false,
-         forceTCP: Bool = false) {
-        self.host = host
-        self.port = port
-        self.username = username
-        self.password = password
-        self.accessTokens = accessTokens
-        self.allowSelfSigned = allowSelfSigned
-        self.forceTCP = forceTCP
-        super.init()
+    
+    func startCall(targetChannelID: String) {
+        self.targetChannelID = targetChannelID
+        self.start()
     }
+
 
     // MARK: - Public Controls
     func start() {
@@ -63,31 +83,24 @@ final class MumbleConnector: NSObject {
         self.connection = conn
         conn?.setDelegate(self)
 
-        if allowSelfSigned {
-            conn?.setIgnoreSSLVerification(true)
-        }
-        if forceTCP {
-            conn?.setForceTCP(true)
-        }
+
 
         let model = MKServerModel(connection: conn)
         self.serverModel = model
         model?.addDelegate(self)
         conn?.setMessageHandler(model)
         
-        let localP12: Data? = self.loadP12FromKeychain(userName: self.username)
 
-        // ⬇️ 在 connect() 之前，設定真正的 client certificate
         if let clientCert = MKCertificate.selfSignedCertificate(withName: username, email: nil),
-           let sslArray = self.makeClientSSLArray(localData: localP12, from: clientCert, password: username, userName: username) {
+           let sslArray = self.makeClientSSLArray(localData: self.loadP12FromKeychain(userName: self.username),
+                                                  from: clientCert,
+                                                  password: username,
+                                                  userName: username) {
             conn?.setCertificateChain(sslArray)
-            print("✅ TLS client certificate chain applied.")
-        } else {
-            print("⚠️ Failed to generate SecIdentity for client certificate")
+            
         }
 
-        print("Connecting to \(host):\(port)...")
-        conn?.connect(toHost: host, port: UInt(Int(port)))
+        conn?.connect(toHost: host, port: self.port)
     }
 
 
@@ -119,80 +132,69 @@ final class MumbleConnector: NSObject {
 
     // MARK: - Audio Setup
     private func startAudioAfterServerSync() {
-        let session = AVAudioSession.sharedInstance()
-        do {
-            try session.setCategory(.playAndRecord,
-                                    options: [.defaultToSpeaker, .allowBluetooth, .mixWithOthers])
-            try session.setPreferredSampleRate(48000)
-            try session.setActive(true)
-            print("✅ AVAudioSession active, inputAvailable:", session.isInputAvailable)
-        } catch {
-            print("❌ AVAudioSession setup failed:", error)
-        }
-
-        let route = session.currentRoute
-        for input in route.inputs {
-            print("🎙 Input port:", input.portName, input.portType.rawValue)
-        }
-        for output in route.outputs {
-            print("🔈 Output port:", output.portName, output.portType.rawValue)
-        }
-
-        // 音訊參數設定
-        var settings = MKAudioSettings()
-        MKAudio.shared().read(&settings)
-        settings.enableEchoCancellation = false
-        settings.transmitType = MKTransmitTypeContinuous
-        settings.preferReceiverOverSpeaker = false
-        settings.enableSideTone = false
-        MKAudio.shared().update(&settings)
-        MKAudio.shared().setForceTransmit(true)
-
-        // 啟動音訊裝置
-        if !MKAudio.shared().isRunning() {
-            MKAudio.shared().start()
-        }
-
-        // 綁定連線
-        if let conn = connection {
-            print("🔗 Binding MKConnection to MKAudioInput via selector")
-            MKAudio.shared().setMainConnectionFor(conn)
-
-            if let ai = MKAudio.shared().value(forKey: "_audioInput") as? NSObject {
-                ai.perform(NSSelectorFromString("setMainConnectionForAudio:"), with: conn)
-                print("🪢 Rebind connection on _audioInput directly")
-            }
-        }
-
-        // 取消靜音與強制傳輸
-        MKAudio.shared().setSelfMuted(false)
-        MKAudio.shared().setForceTransmit(true)
-        serverModel?.setSelfMuted(false, andSelfDeafened: false)
-
-
-        if let input = MKAudio.shared().value(forKey: "_audioInput") as? NSObject {
-            input.setValue(true, forKey: "_forceTransmit")
-            print("🟢 ForceTransmit flag manually set")
-        }
-
-        if let ai = MKAudio.shared().value(forKey: "_audioInput") as? NSObject,
-           let conn = connection {
-            ai.perform(NSSelectorFromString("setMainConnectionForAudio:"), with: conn)
-            print("🪢 Rebind connection on _audioInput directly")
-        }
-
-        onConnectionStateChange?(.connected)
-        // 初次同步完成後，通知 UI 可以讀取頻道/使用者
+        // 啟動音訊
         DispatchQueue.main.async { [weak self] in
-            self?.onModelChanged?()
+            guard let self = self else { return }
+            
+            let session = AVAudioSession.sharedInstance()
+            
+            do {
+                try session.setCategory(.playAndRecord,
+                                        options: [.defaultToSpeaker, .allowBluetoothHFP, .mixWithOthers])
+                try session.setPreferredSampleRate(48000)
+                try session.setActive(true)
+                print("✅ AVAudioSession active, inputAvailable:", session.isInputAvailable)
+            } catch {
+                print("❌ AVAudioSession setup failed:", error)
+            }
+            
+            let route = session.currentRoute
+            for input in route.inputs {
+                print("🎙 Input port:", input.portName, input.portType.rawValue)
+            }
+            for output in route.outputs {
+                print("🔈 Output port:", output.portName, output.portType.rawValue)
+            }
+            
+            // 音訊參數設定
+            var settings = MKAudioSettings()
+            MKAudio.shared().read(&settings)
+            settings.enableEchoCancellation = false
+            settings.transmitType = MKTransmitTypeContinuous
+            settings.preferReceiverOverSpeaker = false
+            settings.enableSideTone = false
+            MKAudio.shared().update(&settings)
+            MKAudio.shared().setForceTransmit(true)
+            
+            if !MKAudio.shared().isRunning() {
+                MKAudio.shared().start()
+            }
+            
+            if let conn = connection {
+                MKAudio.shared().setMainConnectionFor(conn)
+            }
+            
+            
+            self.onConnectionStateChange?(.connected)
+            self.onModelChanged?()
+            self.joinChannelByIDIfNeed()
         }
-        
         
     }
     
-    func createChannel(name: String, maxUsers: Int = 2, parent: MKChannel? = nil) {
+    func joinChannelByIDIfNeed() {
+        guard let model = self.serverModel,
+              let channelID = self.targetChannelID,
+              !channelID.isEmpty,
+              let channel = model.channel(withId: UInt(channelID) ?? 0) else { return }
+        self.join(channel: channel)
+    }
+
         
-        guard let model = serverModel else { return }
+    
+    func createChannel(name: String, parent: MKChannel? = nil) {
+        
+        guard let model = self.serverModel else { return }
 
         model.createChannel(withName: name, parent: parent, temporary: true)
         
@@ -209,8 +211,8 @@ extension MumbleConnector: MKConnectionDelegate {
         print("connectionOpened")
 
         conn?.authenticate(withUsername: username,
-                           password: password ?? "",
-                           accessTokens: accessTokens)
+                           password: password,
+                           accessTokens: nil)
 
         let trusted = conn?.peerCertificateChainTrusted()
         print("Server certificate trusted by system root CAs? \(trusted ?? false)")
@@ -241,11 +243,7 @@ extension MumbleConnector: MKConnectionDelegate {
         }
         onConnectionStateChange?(.disconnected)
     }
-    
-    
 
-
-    
 }
 
 
@@ -262,60 +260,41 @@ extension MumbleConnector: MKServerModelDelegate {
     
     
     func serverModel(_ model: MKServerModel!, channelRemoved channel: MKChannel!) {
-        DispatchQueue.main.async { [weak self] in
-            self?.onModelChanged?()
-        }
+        self.onModelChanged?()
     }
     
     func serverModel(_ model: MKServerModel!, channelAdded channel: MKChannel!) {
-        DispatchQueue.main.async { [weak self] in
-            self?.onModelChanged?()
-        }
+        self.onModelChanged?()
     }
 
     func serverModel(_ model: MKServerModel!, joinedServerAs user: MKUser!, withWelcome msg: MKTextMessage!) {
-        print("✅ joinedServerAsUser: \(user.userName() ?? "")")
 
-        // 判斷是否為臨時用戶（userId == 0 表示未註冊）
         if user.userId() == 0 {
-            print("🆕 Temporary user detected — registering...")
             model.registerConnectedUser()
-        } else {
-            print("🔐 Already registered user (\(user.userId())) — skip registration")
         }
-
-        // 啟動音訊
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
-            self?.startAudioAfterServerSync()
-        }
+  
+        self.startAudioAfterServerSync()
+        
     }
 
     
     func serverModel(_ model: MKServerModel!, userLeft user: MKUser!) {
-        DispatchQueue.main.async { [weak self] in
-            self?.onModelChanged?()
-        }
+        self.onModelChanged?()
     }
     
 
     func serverModelDisconnected(_ model: MKServerModel!) {
-        print("serverModelDisconnected")
         onConnectionStateChange?(.disconnected)
     }
     
     func serverModel(_ model: MKServerModel!, userMoved user: MKUser!, to chan: MKChannel!, from prevChan: MKChannel!, by mover: MKUser!) {
-        DispatchQueue.main.async { [weak self] in
-            self?.onModelChanged?()
-        }
+        self.onModelChanged?()
     }
     
     func serverModel(_ model: MKServerModel!, userTalkStateChanged user: MKUser!) {
-        print("user.talkState: \(user.talkState())")
-        
         let isTalking = user.talkState() == MKTalkState(rawValue: 1)
-        DispatchQueue.main.async { [weak self] in
-            self?.onUserTalkStateChanged?(user, isTalking)
-        }
+        self.onUserTalkStateChanged?(user, isTalking)
+        
     }
     
     func serverModel(_ model: MKServerModel!, missingCertificateErrorFor user: MKUser!) {
@@ -325,70 +304,3 @@ extension MumbleConnector: MKServerModelDelegate {
     
 }
 
-extension MumbleConnector {
-    func makeClientSSLArray(localData: Data? = nil, from mkCert: MKCertificate, password: String, userName: String) -> [Any]? {
-        guard let p12Data = localData ?? mkCert.exportPKCS12(withPassword: password) else {
-            print("❌ exportPKCS12 failed")
-            return nil
-        }
-
-        var items: CFArray?
-        let options: [String: Any] = [kSecImportExportPassphrase as String: password]
-        let status = SecPKCS12Import(p12Data as CFData, options as CFDictionary, &items)
-
-        guard status == errSecSuccess,
-              let imported = items as? [[String: Any]],
-              let first = imported.first,
-              let identityAny = first[kSecImportItemIdentity as String] else {
-            print("❌ SecPKCS12Import failed (\(status))")
-            return nil
-        }
-
-        let identity = identityAny as! SecIdentity
-
-        // 取出完整鏈
-        let certs = first[kSecImportItemCertChain as String] as? [SecCertificate] ?? []
-
-        // SSL 要求格式：[SecIdentity, SecCertificate...]
-        var sslArray: [Any] = [identity]
-        sslArray.append(contentsOf: certs)
-        
-        self.storeP12InKeychain(p12Data: p12Data, password: password, userName: userName)
-
-        return sslArray
-    }
-    
-    func storeP12InKeychain(p12Data: Data, password: String, userName: String) {
-        // 1️⃣ 找到 Documents 目錄
-        guard let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return }
-        let fileURL = documentsURL.appendingPathComponent("\(userName).p12")
-
-        do {
-            // 2️⃣ 寫入 .p12
-            try p12Data.write(to: fileURL, options: .atomic)
-            print("💾 p12 憑證已儲存成功：\(fileURL.path)")
-
-            // 3️⃣ 驗證是否可讀
-            if let readData = try? Data(contentsOf: fileURL) {
-                print("📦 讀取成功，大小：\(readData.count) bytes")
-            } else {
-                print("⚠️ 無法讀取剛剛寫入的 p12")
-            }
-        } catch {
-            print("❌ 儲存 p12 憑證失敗：\(error)")
-        }
-    }
-
-    
-    func loadP12FromKeychain(userName: String) -> Data?  {
-        guard let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return nil }
-        let fileURL = documentsURL.appendingPathComponent("\(userName).p12")
-
-        if let p12Data = try? Data(contentsOf: fileURL) {
-            return p12Data
-        } else {
-            return nil
-        }
-    }
-
-}

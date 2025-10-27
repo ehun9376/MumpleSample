@@ -8,6 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		3661C3652EA785B4004E7226 /* MumbleConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3661C3612EA785B3004E7226 /* MumbleConnector.swift */; };
+		36DCB4622EA9FD9D00F7761B /* MumbleConnector+MakeClientSSLArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36DCB4612EA9FD8F00F7761B /* MumbleConnector+MakeClientSSLArray.swift */; };
+		36DCB4652EAA112E00F7761B /* CallManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36DCB4642EAA112A00F7761B /* CallManager.swift */; };
+		36DCB4672EAA17C300F7761B /* VoIPPushManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36DCB4662EAA17C100F7761B /* VoIPPushManager.swift */; };
+		36DCB46B2EAA249400F7761B /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 36DCB46A2EAA249400F7761B /* FirebaseCore */; };
+		36DCB46D2EAA249400F7761B /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 36DCB46C2EAA249400F7761B /* FirebaseMessaging */; };
 		36E275A82E9F4E9900687354 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 36E275972E9F4E9900687354 /* Main.storyboard */; };
 		36E275A92E9F4E9900687354 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 36E275922E9F4E9900687354 /* Assets.xcassets */; };
 		36E275E12E9F4E9900687354 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E275992E9F4E9900687354 /* SceneDelegate.swift */; };
@@ -56,6 +61,10 @@
 
 /* Begin PBXFileReference section */
 		3661C3612EA785B3004E7226 /* MumbleConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MumbleConnector.swift; sourceTree = "<group>"; };
+		36DCB4612EA9FD8F00F7761B /* MumbleConnector+MakeClientSSLArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MumbleConnector+MakeClientSSLArray.swift"; sourceTree = "<group>"; };
+		36DCB4642EAA112A00F7761B /* CallManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallManager.swift; sourceTree = "<group>"; };
+		36DCB4662EAA17C100F7761B /* VoIPPushManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoIPPushManager.swift; sourceTree = "<group>"; };
+		36DCB4682EAA183A00F7761B /* MumbleSample.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MumbleSample.entitlements; sourceTree = "<group>"; };
 		36E273F12E9F4D4E00687354 /* MumbleSample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MumbleSample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		36E274062E9F4D4F00687354 /* MumbleSampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MumbleSampleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		36E274102E9F4D4F00687354 /* MumbleSampleUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MumbleSampleUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -82,7 +91,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				36DCB46D2EAA249400F7761B /* FirebaseMessaging in Frameworks */,
 				36E2BD252E9F8B6800687354 /* libMumbleKit.a in Frameworks */,
+				36DCB46B2EAA249400F7761B /* FirebaseCore in Frameworks */,
 				36E2A42A2E9F71D600687354 /* Security.framework in Frameworks */,
 				36E2A4282E9F71CF00687354 /* CFNetwork.framework in Frameworks */,
 				36E2A4262E9F71C900687354 /* AudioToolbox.framework in Frameworks */,
@@ -140,6 +151,7 @@
 		36E2759B2E9F4E9900687354 /* MumbleSample */ = {
 			isa = PBXGroup;
 			children = (
+				36DCB4682EAA183A00F7761B /* MumbleSample.entitlements */,
 				36E2BD152E9F7F7500687354 /* MumbleKit.xcodeproj */,
 				36E275912E9F4E9900687354 /* AppDelegate.swift */,
 				36E275922E9F4E9900687354 /* Assets.xcassets */,
@@ -150,7 +162,10 @@
 				36E28F162E9F6CF200687354 /* Mumble-Bridging-Header.h */,
 				36E2759A2E9F4E9900687354 /* ViewController.swift */,
 				36E9820D2EA8B3DA0058AE67 /* ChannelDisplayItem.swift */,
+				36DCB4642EAA112A00F7761B /* CallManager.swift */,
+				36DCB4662EAA17C100F7761B /* VoIPPushManager.swift */,
 				3661C3612EA785B3004E7226 /* MumbleConnector.swift */,
+				36DCB4612EA9FD8F00F7761B /* MumbleConnector+MakeClientSSLArray.swift */,
 			);
 			path = MumbleSample;
 			sourceTree = "<group>";
@@ -198,6 +213,8 @@
 			);
 			name = MumbleSample;
 			packageProductDependencies = (
+				36DCB46A2EAA249400F7761B /* FirebaseCore */,
+				36DCB46C2EAA249400F7761B /* FirebaseMessaging */,
 			);
 			productName = MumbleSample;
 			productReference = 36E273F12E9F4D4E00687354 /* MumbleSample.app */;
@@ -276,6 +293,9 @@
 			);
 			mainGroup = 36E272B72E9F4A5F00687354;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				36DCB4692EAA249400F7761B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 36E272C12E9F4A5F00687354 /* Products */;
 			projectDirPath = "";
@@ -336,9 +356,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				36E275E12E9F4E9900687354 /* SceneDelegate.swift in Sources */,
+				36DCB4672EAA17C300F7761B /* VoIPPushManager.swift in Sources */,
 				3661C3652EA785B4004E7226 /* MumbleConnector.swift in Sources */,
 				36E275E52E9F4E9900687354 /* ViewController.swift in Sources */,
+				36DCB4652EAA112E00F7761B /* CallManager.swift in Sources */,
 				36E982112EA8B3DB0058AE67 /* ChannelDisplayItem.swift in Sources */,
+				36DCB4622EA9FD9D00F7761B /* MumbleConnector+MakeClientSSLArray.swift in Sources */,
 				36E275E62E9F4E9900687354 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -526,6 +549,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = MumbleSample/MumbleSample.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 6GH2ZWT255;
@@ -554,7 +578,7 @@
 					"-lc++",
 					"-ObjC",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.ehun.CombineUser.MumbleSample;
+				PRODUCT_BUNDLE_IDENTIFIER = tw.com.1111.goodjobs2014;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -572,6 +596,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = MumbleSample/MumbleSample.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 6GH2ZWT255;
@@ -599,7 +624,7 @@
 					"-lc++",
 					"-ObjC",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.ehun.CombineUser.MumbleSample;
+				PRODUCT_BUNDLE_IDENTIFIER = tw.com.1111.goodjobs2014;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -736,6 +761,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		36DCB4692EAA249400F7761B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.4.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		36DCB46A2EAA249400F7761B /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 36DCB4692EAA249400F7761B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+		36DCB46C2EAA249400F7761B /* FirebaseMessaging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 36DCB4692EAA249400F7761B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseMessaging;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 36E272B82E9F4A5F00687354 /* Project object */;
 }

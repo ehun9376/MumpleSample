@@ -8,8 +8,6 @@
 		<false/>
 		<key>UISceneConfigurations</key>
 		<dict>
-            <key>NSMicrophoneUsageDescription</key>
-            <string>需要麥克風以傳送語音</string>
 			<key>UIWindowSceneSessionRoleApplication</key>
 			<array>
 				<dict>
@@ -23,5 +21,11 @@
 			</array>
 		</dict>
 	</dict>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>voip</string>
+		<string>audio</string>
+		<string>remote-notification</string>
+	</array>
 </dict>
 </plist>
