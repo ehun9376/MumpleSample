@@ -6,36 +6,42 @@
 //
 
 extension MumbleConnector {
-    func makeClientSSLArray(localData: Data? = nil, from mkCert: MKCertificate, password: String, userName: String) -> [Any]? {
-        guard let p12Data = localData ?? mkCert.exportPKCS12(withPassword: password) else {
-            print("❌ exportPKCS12 failed")
-            return nil
-        }
-
-        var items: CFArray?
-        let options: [String: Any] = [kSecImportExportPassphrase as String: password]
-        let status = SecPKCS12Import(p12Data as CFData, options as CFDictionary, &items)
-
-        guard status == errSecSuccess,
-              let imported = items as? [[String: Any]],
-              let first = imported.first,
-              let identityAny = first[kSecImportItemIdentity as String] else {
-            print("❌ SecPKCS12Import failed (\(status))")
-            return nil
-        }
-
-        let identity = identityAny as! SecIdentity
-
-        // 取出完整鏈
-        let certs = first[kSecImportItemCertChain as String] as? [SecCertificate] ?? []
-
-        // SSL 要求格式：[SecIdentity, SecCertificate...]
-        var sslArray: [Any] = [identity]
-        sslArray.append(contentsOf: certs)
+    func makeClientSSLArray(localData: Data? = nil, from mkCert: MKCertificate, password: String, userName: String, complete: (([Any]?)->())?) {
         
-        self.storeP12InKeychain(p12Data: p12Data, password: password, userName: userName)
+        DispatchQueue.global().async { [weak self] in
+            guard let self else { return }
+                
+            guard let p12Data = localData ?? mkCert.exportPKCS12(withPassword: password) else {
+                print("❌ exportPKCS12 failed")
+                return
+            }
 
-        return sslArray
+            var items: CFArray?
+            let options: [String: Any] = [kSecImportExportPassphrase as String: password]
+            let status = SecPKCS12Import(p12Data as CFData, options as CFDictionary, &items)
+
+            guard status == errSecSuccess,
+                  let imported = items as? [[String: Any]],
+                  let first = imported.first,
+                  let identityAny = first[kSecImportItemIdentity as String] else {
+                print("❌ SecPKCS12Import failed (\(status))")
+                return
+            }
+
+            let identity = identityAny as! SecIdentity
+
+            // 取出完整鏈
+            let certs = first[kSecImportItemCertChain as String] as? [SecCertificate] ?? []
+
+            // SSL 要求格式：[SecIdentity, SecCertificate...]
+            var sslArray: [Any] = [identity]
+            sslArray.append(contentsOf: certs)
+            
+            self.storeP12InKeychain(p12Data: p12Data, password: password, userName: userName)
+
+            complete?(sslArray)
+        }
+        
     }
     
     func storeP12InKeychain(p12Data: Data, password: String, userName: String) {

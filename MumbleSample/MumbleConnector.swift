@@ -12,33 +12,10 @@ enum ConnectionState {
     case disconnected
 }
 
-protocol ConnectorProtocol {
-    var connection: MKConnection? { get set }
-    var serverModel: MKServerModel? { get set }
-    var rootChannel: MKChannel? { get }
-    var openChannel: MKChannel? { get }
-    /// 有新增移除頻道、使用者加入、使用者移動頻道等事件時觸發
-    var onModelChanged: (() -> ())? { get set }
-    /// 使用者講話狀態改變時觸發
-    var onUserTalkStateChanged: ((MKUser, Bool) -> ())? { get set }
-    /// 連線狀態改變時觸發
-    var onConnectionStateChange: ((ConnectionState) -> Void)? { get set }
-    ///啟動連線
-    func start()
-    /// 停止連線
-    func stop()
-    /// 靜音/取消靜音
-    func setMuted(_ muted: Bool)
-    /// 自我靜音/取消自我靜音
-    func setSelfDeafened(_ deaf: Bool)
-    /// 切換頻道
-    func join(channel: MKChannel)
-    
-
-}
 
 
-class MumbleConnector: NSObject, ConnectorProtocol {
+
+class MumbleConnector: NSObject {
     
     static let shared = MumbleConnector()
 
@@ -116,16 +93,23 @@ class MumbleConnector: NSObject, ConnectorProtocol {
         conn?.setMessageHandler(model)
         
 
-        if let clientCert = MKCertificate.selfSignedCertificate(withName: username, email: nil),
-           let sslArray = self.makeClientSSLArray(localData: self.loadP12FromKeychain(userName: self.username),
-                                                  from: clientCert,
-                                                  password: username,
-                                                  userName: username) {
-            conn?.setCertificateChain(sslArray)
+        if let clientCert = MKCertificate.selfSignedCertificate(withName: username, email: nil) {
             
+            self.makeClientSSLArray(localData: self.loadP12FromKeychain(userName: self.username),
+                                    from: clientCert,
+                                    password: username,
+                                    userName: username,
+                                    complete: { [weak self] sslArray in
+                guard let self = self else { return }
+                //要在連線建立前就設定憑證，不然會沒有效果
+                conn?.setCertificateChain(sslArray)
+                conn?.connect(toHost: self.host, port: self.port)
+                
+            })
         }
-
-        conn?.connect(toHost: host, port: self.port)
+            
+      
+      
     }
 
 

@@ -14,7 +14,9 @@ class CallKitManager: NSObject {
 
     private let provider: CXProvider
     private let controller = CXCallController()
+    private var newCall: IncomingCallContext?
     private var currentCall: IncomingCallContext?
+    
 
     private override init() {
         let cfg = CXProviderConfiguration(localizedName: "1111 VOIP")
@@ -51,7 +53,7 @@ extension CallKitManager {
                 return
             }
             print("📞 Incoming call from \(display)")
-            self?.currentCall = IncomingCallContext(uuid: uuid,
+            self?.newCall = IncomingCallContext(uuid: uuid,
                                                     callerDisplay: display,
                                                     channelID: channelID)
         }
@@ -105,13 +107,23 @@ extension CallKitManager: CXProviderDelegate {
 
     func provider(_ provider: CXProvider, perform action: CXAnswerCallAction) {
         print("✅ CallKit: Answer")
-        action.fulfill()
+        
+        //如果有舊的就，不管是保留還是掛斷後接聽，都是強制先結束舊的，
+        if let ctx = self.currentCall {
+            print("🧹 結束舊通話 \(ctx.callerDisplay)")
+            provider.reportCall(with: ctx.uuid, endedAt: Date(), reason: .answeredElsewhere)
+            MumbleConnector.shared.stop()
+        }
 
-        self.enableProximitySensor(true)
-        // 開始連線 Mumble（你已經有 MumbleConnector）
-        guard let ctx = currentCall else { return }
-
-        MumbleConnector.shared.connectCall(answerChannelID: ctx.channelID)
+        //處理新的來電
+        if let ctx = self.newCall {
+            action.fulfill()
+            self.enableProximitySensor(true)
+            MumbleConnector.shared.connectCall(answerChannelID: ctx.channelID)
+            self.currentCall = ctx
+            self.newCall = nil
+        }
+      
 
       
     }
@@ -119,9 +131,10 @@ extension CallKitManager: CXProviderDelegate {
     func provider(_ provider: CXProvider, perform action: CXEndCallAction) {
         print("🟥 CallKit: End")
         action.fulfill()
-        enableProximitySensor(false)
+        self.enableProximitySensor(false)
+        self.currentCall = nil
         MumbleConnector.shared.stop()
-        currentCall = nil
+  
     }
 
     func provider(_ provider: CXProvider, perform action: CXStartCallAction) {
@@ -140,7 +153,8 @@ extension CallKitManager: CXProviderDelegate {
 
     func providerDidReset(_ provider: CXProvider) {
         print("♻️ CallKit reset")
-        currentCall = nil
+        self.newCall = nil
+        self.currentCall = nil
         MumbleConnector.shared.stop()
     }
 }
