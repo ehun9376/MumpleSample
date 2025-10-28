@@ -1,24 +1,23 @@
 import Foundation
-import CallKit
 import AVFAudio
-import UIKit
+import CallKit
 
-struct IncomingCallContext {
-    let uuid: UUID
-    let callerDisplay: String
-    let channelID: UInt
+protocol CallKitManager {
+    func reportIncoming(from display: String, channelID: UInt)
+    func startOutgoing(to display: String, channelID: UInt)
+    func endCall(reason: CXCallEndedReason)
 }
 
-class CallKitManager: NSObject {
-    static let shared = CallKitManager()
+class CallKitManagerImpl: NSObject, CallKitManager {
 
     private let provider: CXProvider
     private let controller = CXCallController()
     private var newCall: IncomingCallContext?
     private var currentCall: IncomingCallContext?
     
+    var coordinator: CallCoordinator?
 
-    private override init() {
+    override init() {
         let cfg = CXProviderConfiguration(localizedName: "1111 VOIP")
         cfg.supportsVideo = false
         cfg.maximumCallsPerCallGroup = 1
@@ -34,12 +33,9 @@ class CallKitManager: NSObject {
         super.init()
         provider.setDelegate(self, queue: nil)
     }
-}
-
-// MARK: - 來電邏輯
-extension CallKitManager {
-
-    /// 📲 當收到 VoIP 推播後呼叫這個方法
+    
+    
+    /// 當收到 VoIP 推播後呼叫這個方法
     func reportIncoming(from display: String, channelID: UInt) {
         let uuid = UUID()
         let update = CXCallUpdate()
@@ -58,11 +54,7 @@ extension CallKitManager {
                                                     channelID: channelID)
         }
     }
-}
-
-// MARK: - 撥出邏輯
-extension CallKitManager {
-
+    
     func startOutgoing(to display: String, channelID: UInt) {
         let uuid = UUID()
         let handle = CXHandle(type: .generic, value: display)
@@ -95,15 +87,16 @@ extension CallKitManager {
     }
 
     func endCall(reason: CXCallEndedReason = .remoteEnded) {
-        guard let ctx = currentCall else { return }
-        provider.reportCall(with: ctx.uuid, endedAt: Date(), reason: reason)
-        currentCall = nil
-        MumbleConnector.shared.stop()
+        if let ctx = currentCall {
+            self.provider.reportCall(with: ctx.uuid, endedAt: Date(), reason: reason)
+        }
+        self.currentCall = nil
+        self.coordinator?.endMumbleConnect()
     }
 }
 
 // MARK: - CallKit Delegate
-extension CallKitManager: CXProviderDelegate {
+extension CallKitManagerImpl: CXProviderDelegate {
 
     func provider(_ provider: CXProvider, perform action: CXAnswerCallAction) {
         print("✅ CallKit: Answer")
@@ -112,14 +105,15 @@ extension CallKitManager: CXProviderDelegate {
         if let ctx = self.currentCall {
             print("🧹 結束舊通話 \(ctx.callerDisplay)")
             provider.reportCall(with: ctx.uuid, endedAt: Date(), reason: .answeredElsewhere)
-            MumbleConnector.shared.stop()
+            self.enableProximitySensor(false)
+            self.endCall()
         }
 
         //處理新的來電
         if let ctx = self.newCall {
             action.fulfill()
             self.enableProximitySensor(true)
-            MumbleConnector.shared.connectCall(answerChannelID: ctx.channelID)
+            self.coordinator?.answerIncoming(from: ctx.callerDisplay, channelID: ctx.channelID)
             self.currentCall = ctx
             self.newCall = nil
         }
@@ -132,9 +126,7 @@ extension CallKitManager: CXProviderDelegate {
         print("🟥 CallKit: End")
         action.fulfill()
         self.enableProximitySensor(false)
-        self.currentCall = nil
-        MumbleConnector.shared.stop()
-  
+        self.endCall()
     }
 
     func provider(_ provider: CXProvider, perform action: CXStartCallAction) {
@@ -144,7 +136,7 @@ extension CallKitManager: CXProviderDelegate {
 
     func provider(_ provider: CXProvider, didActivate audioSession: AVAudioSession) {
         print("🎧 CallKit didActivate, start Mumble now")
-        MumbleConnector.shared.callKitReady = true
+        self.coordinator?.setCallKitReady(true)
     }
 
     func provider(_ provider: CXProvider, didDeactivate audioSession: AVAudioSession) {
@@ -153,14 +145,12 @@ extension CallKitManager: CXProviderDelegate {
 
     func providerDidReset(_ provider: CXProvider) {
         print("♻️ CallKit reset")
-        self.newCall = nil
-        self.currentCall = nil
-        MumbleConnector.shared.stop()
+        self.endCall()
     }
 }
 
 // MARK: - Proximity Sensor
-extension CallKitManager {
+extension CallKitManagerImpl {
 
     func enableProximitySensor(_ enabled: Bool) {
         let device = UIDevice.current

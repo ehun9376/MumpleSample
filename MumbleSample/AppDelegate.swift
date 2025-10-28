@@ -15,12 +15,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
-        // 啟動 VoIP Push（取得 VoIP token）
-        _ = CallKitManager.shared // 提前建立 provider
-
-        VoIPPushManager.shared.start()
-
-        // 音訊類別（CallKit 啟用後也會交由你的音訊處理）
+        MumbleCallCoordinator.shared = .init(config: .test)
         
         let session = AVAudioSession.sharedInstance()
         
@@ -35,25 +30,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
 
 
-        // 1) 申請通知權限（一般 APNs）
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, err in
             if let err {
                 print("🔔 Notification authorization error: \(err)")
             }
             print("🔔 Notification authorization granted: \(granted)")
 
-            // 2) 向 APNs 註冊（要在主執行緒）
             DispatchQueue.main.async {
                 UIApplication.shared.registerForRemoteNotifications()
             }
         }
-        
-
-
-        // 顯示全螢幕來電畫面
-//        CallKitManager.shared.reportIncoming(from: "Someone",
-//                                             channelID: "2")
-
 
         return true
     }

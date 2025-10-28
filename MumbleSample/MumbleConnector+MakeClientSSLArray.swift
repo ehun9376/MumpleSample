@@ -1,13 +1,13 @@
 //
-//  MumbleConnector+LocalStore.swift
+//  MumbleConnectorImpl+LocalStore.swift
 //  MumbleSample
 //
 //  Created by 陳逸煌 on 2025/10/23.
 //
 
-extension MumbleConnector {
+extension MumbleConnectorImpl {
     func makeClientSSLArray(localData: Data? = nil, from mkCert: MKCertificate, password: String, userName: String, complete: (([Any]?)->())?) {
-        
+      
         DispatchQueue.global().async { [weak self] in
             guard let self else { return }
                 
@@ -59,7 +59,8 @@ extension MumbleConnector {
     }
 
     
-    func loadP12FromKeychain(userName: String) -> Data?  {
+    func loadP12FromKeychain(userName: String?) -> Data?  {
+        guard let userName else { return nil }
         guard let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return nil }
         let fileURL = documentsURL.appendingPathComponent("\(userName).p12")
 

@@ -10,8 +10,15 @@ import PushKit
 import UIKit
 
 class VoIPPushManager: NSObject {
-    static let shared = VoIPPushManager()
+    
+    var callCoordinator: CallCoordinator?
+    
     private var registry: PKPushRegistry?
+    
+    override init() {
+        super.init()
+        self.start()
+    }
 
     func start() {
         let reg = PKPushRegistry(queue: .main)
@@ -27,6 +34,8 @@ extension VoIPPushManager: PKPushRegistryDelegate {
         let token = pushCredentials.token.map { String(format: "%02.2hhx", $0) }.joined()
 
         print("📲 VoIP token: \(token)")
+        
+        //TODO 儲存VOIP Token 更新至Masa Server
     }
 
     func pushRegistry(_ registry: PKPushRegistry,
@@ -37,8 +46,7 @@ extension VoIPPushManager: PKPushRegistryDelegate {
         let dict = payload.dictionaryPayload
         let caller = (dict["caller"] as? String) ?? "Unknown"
         let channelID = dict["channelID"] as? UInt ?? 0
-
-        CallKitManager.shared.reportIncoming(from: caller,
+        self.callCoordinator?.reportCallKitIncoming(from: caller,
                                              channelID: channelID)
 
         completion()
