@@ -5,7 +5,8 @@ import CallKit
 protocol CallKitManager {
     func reportIncoming(from display: String, channelID: UInt)
     func startOutgoing(to display: String, channelID: UInt)
-    func endCall(reason: CXCallEndedReason)
+    func endCallFromRemote()
+    var callDelegate: CallDelegate? { get set }
 }
 
 class CallKitManagerImpl: NSObject, CallKitManager {
@@ -15,7 +16,7 @@ class CallKitManagerImpl: NSObject, CallKitManager {
     private var newCall: IncomingCallContext?
     private var currentCall: IncomingCallContext?
     
-    var coordinator: CallCoordinator?
+    var callDelegate: CallDelegate?
 
     override init() {
         let cfg = CXProviderConfiguration(localizedName: "1111 VOIP")
@@ -91,7 +92,11 @@ class CallKitManagerImpl: NSObject, CallKitManager {
             self.provider.reportCall(with: ctx.uuid, endedAt: Date(), reason: reason)
         }
         self.currentCall = nil
-        self.coordinator?.endMumbleConnect()
+        self.callDelegate?.endCall()
+    }
+    
+    func endCallFromRemote() {
+        self.endCall(reason: .remoteEnded)
     }
 }
 
@@ -113,7 +118,7 @@ extension CallKitManagerImpl: CXProviderDelegate {
         if let ctx = self.newCall {
             action.fulfill()
             self.enableProximitySensor(true)
-            self.coordinator?.answerIncoming(from: ctx.callerDisplay, channelID: ctx.channelID)
+            self.callDelegate?.answerIncoming(from: ctx.callerDisplay, channelID: ctx.channelID)
             self.currentCall = ctx
             self.newCall = nil
         }
@@ -136,7 +141,7 @@ extension CallKitManagerImpl: CXProviderDelegate {
 
     func provider(_ provider: CXProvider, didActivate audioSession: AVAudioSession) {
         print("🎧 CallKit didActivate, start Mumble now")
-        self.coordinator?.setCallKitReady(true)
+        self.callDelegate?.setCallKitReady(true)
     }
 
     func provider(_ provider: CXProvider, didDeactivate audioSession: AVAudioSession) {

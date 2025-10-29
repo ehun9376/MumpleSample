@@ -11,7 +11,7 @@ import UIKit
 
 class VoIPPushManager: NSObject {
     
-    var callCoordinator: CallCoordinator?
+    var delegate: ReportCallDelegate?
     
     private var registry: PKPushRegistry?
     
@@ -46,7 +46,7 @@ extension VoIPPushManager: PKPushRegistryDelegate {
         let dict = payload.dictionaryPayload
         let caller = (dict["caller"] as? String) ?? "Unknown"
         let channelID = dict["channelID"] as? UInt ?? 0
-        self.callCoordinator?.reportCallKitIncoming(from: caller,
+        self.delegate?.reportCallKitIncoming(from: caller,
                                              channelID: channelID)
 
         completion()

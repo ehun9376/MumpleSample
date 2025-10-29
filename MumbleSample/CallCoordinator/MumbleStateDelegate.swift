@@ -1,11 +1,11 @@
 //
-//  MumbleClientDelegate.swift
+//  MumbleStateDelegate.swift
 //  MumbleSample
 //
 //  Created by 陳逸煌 on 2025/10/28.
 //
 
-protocol MumbleClientDelegate {
+protocol MumbleStateDelegate {
     /// 有新增移除頻道、使用者加入、使用者移動頻道等事件時觸發
     func onModelChanged(model: MKServerModel)
 

@@ -10,7 +10,7 @@ import AVFoundation
 
 class ViewController: UIViewController {
     
-    var coordinator: CallCoordinator? = MumbleCallCoordinator.shared
+    var coordinator: CallControllable = MumbleCallCoordinator.shared
 
     private let muteButton = UIButton(type: .system)
     private let deafenButton = UIButton(type: .system)
@@ -32,7 +32,7 @@ class ViewController: UIViewController {
 
         // 麥克風權限
         self.requestMicPermissionIfNeeded()
-        self.coordinator?.setMumbleDelegate(delegate: self)
+        self.coordinator.setStateDelegate(delegate: self)
   
     }
 
@@ -123,22 +123,20 @@ class ViewController: UIViewController {
 
 
     @objc private func toggleMute() {
-        self.coordinator?.toggleMute()
-        self.muteButton.isSelected.toggle()
+        self.muteButton.isSelected = self.coordinator.toggleMute()
     }
 
     @objc private func toggleDeafen() {
-        self.coordinator?.toggleDeafen()
-        self.deafenButton.isSelected.toggle()
+        self.deafenButton.isSelected = self.coordinator.toggleDeafen()
     }
   
     
     @objc private func callOther() {
-        self.coordinator?.requestMumbleOutgoing(to: "Other", channelID: 2)
+        self.coordinator.requestOutgoingCall(to: "Other", channelID: 2)
     }
 }
 
-extension ViewController: MumbleClientDelegate {
+extension ViewController: MumbleStateDelegate {
     func onModelChanged(model: MKServerModel) {
         
         DispatchQueue.main.async {  [weak self] in

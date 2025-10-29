@@ -13,7 +13,21 @@ enum ConnectionState {
 }
 
 protocol MumbleConnector {
+    var connectionDelegate: MumbleConnectionDelegate? { get set }
     
+    var stateDelegate: MumbleStateDelegate? { get set }
+
+    func startAudio()
+    
+    func stop()
+    
+    func toggleMuted() -> Bool
+    
+    func toggleSelfDeafened() -> Bool
+    
+    func startConnect(with channelID: UInt)
+    
+    func makeCallWithCreateAChannel(to user: String)
 }
 
 class MumbleConnectorImpl: NSObject, MumbleConnector {
@@ -21,10 +35,10 @@ class MumbleConnectorImpl: NSObject, MumbleConnector {
     var connection: MKConnection?
     
     var serverModel: MKServerModel?
-
-    var coordinator: CallCoordinator?
     
-    var delegate: MumbleClientDelegate?
+    var connectionDelegate: MumbleConnectionDelegate?
+    
+    var stateDelegate: MumbleStateDelegate?
         
     private var answerChannelID: UInt?
 
@@ -50,15 +64,17 @@ class MumbleConnectorImpl: NSObject, MumbleConnector {
 
 
 
-    func toggleMuted() {
+    func toggleMuted() -> Bool {
         self.isMuted.toggle()
         self.serverModel?.setSelfMuted(self.isMuted, andSelfDeafened: self.isSelfDeafened)
         MKAudio.shared().setSelfMuted(self.isMuted)
+        return self.isMuted
     }
 
-    func toggleDeafened() {
+    func toggleSelfDeafened() -> Bool {
         self.isSelfDeafened.toggle()
         self.serverModel?.setSelfMuted(self.isMuted, andSelfDeafened: self.isSelfDeafened)
+        return self.isSelfDeafened
     }
     
     //TODO: param新增userID
@@ -70,7 +86,7 @@ class MumbleConnectorImpl: NSObject, MumbleConnector {
         self.start()
     }
     
-    func answerCall(from channelID: UInt) {
+    func startConnect(with channelID: UInt) {
         self.answerChannelID = channelID
         self.start()
     }
@@ -87,7 +103,7 @@ class MumbleConnectorImpl: NSObject, MumbleConnector {
         model?.addDelegate(self)
         conn?.setMessageHandler(model)
         
-        guard let config = self.coordinator?.config else {
+        guard let config = self.connectionDelegate?.getConfig() else {
             return
         }
         
@@ -103,14 +119,14 @@ class MumbleConnectorImpl: NSObject, MumbleConnector {
             guard let self = self else { return }
             //要在連線建立前就設定憑證，不然會沒有效果
             conn?.setCertificateChain(sslArray)
-            conn?.connect(toHost: self.coordinator?.config.host ?? "", port: self.coordinator?.config.port ?? 0)
+            conn?.connect(toHost: self.connectionDelegate?.getConfig().host ?? "", port: self.connectionDelegate?.getConfig().port ?? 0)
             
         })
           
     }
 
 
-    private func stop() {
+    func stop() {
         print("🛑 Stopping Mumble connection...")
 
         if MKAudio.shared().isRunning() {
@@ -125,9 +141,9 @@ class MumbleConnectorImpl: NSObject, MumbleConnector {
         connection?.disconnect()
         connection = nil
         serverModel = nil
-        self.delegate?.onConnectionStateChange(status: .disconnected)
+        self.stateDelegate?.onConnectionStateChange(status: .disconnected)
         
-        self.coordinator?.setServerReady(false)
+        self.connectionDelegate?.setServerReady(false)
 
         print("🧹 Connection + state reset complete")
     }
@@ -189,7 +205,7 @@ class MumbleConnectorImpl: NSObject, MumbleConnector {
             guard let self = self else { return }
             guard let channel = self.findChannelByName(channel: self.openChannel, channelName: channelName) else { return }
             self.join(channel: channel)
-            self.coordinator?.startCallKitOutgoing(to: user, channelID: channel.channelId())
+            self.connectionDelegate?.startCallKitOutgoing(to: user, channelID: channel.channelId())
         }
     }
     
@@ -226,8 +242,8 @@ extension MumbleConnectorImpl: MKConnectionDelegate {
     func connectionOpened(_ conn: MKConnection!) {
         print("connectionOpened")
 
-        conn?.authenticate(withUsername: self.coordinator?.config.username,
-                           password: self.coordinator?.config.serverPassword,
+        conn?.authenticate(withUsername: self.connectionDelegate?.getConfig().username,
+                           password: self.connectionDelegate?.getConfig().serverPassword,
                            accessTokens: nil)
 
         let trusted = conn?.peerCertificateChainTrusted()
@@ -243,13 +259,13 @@ extension MumbleConnectorImpl: MKConnectionDelegate {
 
     func connection(_ conn: MKConnection!, rejectedWith reason: MKRejectReason, explanation: String!) {
         print("rejected: reason=\(reason.rawValue) explanation=\(explanation ?? "")")
-        self.delegate?.onConnectionStateChange(status: .disconnected)
+        self.stateDelegate?.onConnectionStateChange(status: .disconnected)
     }
 
     func connection(_ conn: MKConnection!, unableToConnectWithError err: Error!) {
         print("unableToConnectWithError: \(err.localizedDescription)")
-        self.coordinator?.endMumbleConnect()
-        self.delegate?.onConnectionStateChange(status: .disconnected)
+        self.connectionDelegate?.endConnected()
+        self.stateDelegate?.onConnectionStateChange(status: .disconnected)
     }
 
     func connection(_ conn: MKConnection!, closedWithError err: Error!) {
@@ -258,8 +274,8 @@ extension MumbleConnectorImpl: MKConnectionDelegate {
         } else {
             print("closed normally")
         }
-        self.coordinator?.endMumbleConnect()
-        self.delegate?.onConnectionStateChange(status: .disconnected)
+        self.connectionDelegate?.endConnected()
+        self.stateDelegate?.onConnectionStateChange(status: .disconnected)
     }
 
 }
@@ -278,19 +294,19 @@ extension MumbleConnectorImpl: MKServerModelDelegate {
     
     
     func serverModel(_ model: MKServerModel!, channelRemoved channel: MKChannel!) {
-        self.delegate?.onModelChanged(model: model)
+        self.stateDelegate?.onModelChanged(model: model)
     }
     
     func serverModel(_ model: MKServerModel!, channelAdded channel: MKChannel!) {
-        self.delegate?.onModelChanged(model: model)
+        self.stateDelegate?.onModelChanged(model: model)
     }
 
     func serverModel(_ model: MKServerModel!, joinedServerAs user: MKUser!, withWelcome msg: MKTextMessage!) {
 
-        self.coordinator?.setServerReady(true)
+        self.connectionDelegate?.setServerReady(true)
         
-        self.delegate?.onConnectionStateChange(status: .connected)
-        self.delegate?.onModelChanged(model: model)
+        self.stateDelegate?.onConnectionStateChange(status: .connected)
+        self.stateDelegate?.onModelChanged(model: model)
         
         self.joinChannelByIDIfNeed()
         self.createAndJoinChannelIfNeed(to: "TODO: User Name")
@@ -302,21 +318,21 @@ extension MumbleConnectorImpl: MKServerModelDelegate {
 
     
     func serverModel(_ model: MKServerModel!, userLeft user: MKUser!) {
-        self.delegate?.onModelChanged(model: model)
+        self.stateDelegate?.onModelChanged(model: model)
     }
     
 
     func serverModelDisconnected(_ model: MKServerModel!) {
-        self.delegate?.onConnectionStateChange(status: .disconnected)
+        self.stateDelegate?.onConnectionStateChange(status: .disconnected)
     }
     
     func serverModel(_ model: MKServerModel!, userMoved user: MKUser!, to chan: MKChannel!, from prevChan: MKChannel!, by mover: MKUser!) {
-        self.delegate?.onModelChanged(model: model)
+        self.stateDelegate?.onModelChanged(model: model)
     }
     
     func serverModel(_ model: MKServerModel!, userTalkStateChanged user: MKUser!) {
         let isTalking = user.talkState() == MKTalkState(rawValue: 1)
-        self.delegate?.onUserTalkStateChanged(user: user, isTalking: isTalking)
+        self.stateDelegate?.onUserTalkStateChanged(user: user, isTalking: isTalking)
         
     }
     

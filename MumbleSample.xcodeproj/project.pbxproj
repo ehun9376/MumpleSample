@@ -12,7 +12,7 @@
 		366E72582EB05D2200DC0753 /* MumbleConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366E72572EB05D1E00DC0753 /* MumbleConfig.swift */; };
 		366E725B2EB0947000DC0753 /* CallCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366E725A2EB0947000DC0753 /* CallCoordinator.swift */; };
 		366E725F2EB094AD00DC0753 /* IncomingCallContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366E725E2EB094AD00DC0753 /* IncomingCallContext.swift */; };
-		366E72612EB09D9A00DC0753 /* MumbleClientDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366E72602EB09D9900DC0753 /* MumbleClientDelegate.swift */; };
+		366E72612EB09D9A00DC0753 /* MumbleStateDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366E72602EB09D9900DC0753 /* MumbleStateDelegate.swift */; };
 		36DCB4622EA9FD9D00F7761B /* MumbleConnector+MakeClientSSLArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36DCB4612EA9FD8F00F7761B /* MumbleConnector+MakeClientSSLArray.swift */; };
 		36DCB4652EAA112E00F7761B /* CallManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36DCB4642EAA112A00F7761B /* CallManager.swift */; };
 		36DCB4672EAA17C300F7761B /* VoIPPushManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36DCB4662EAA17C100F7761B /* VoIPPushManager.swift */; };
@@ -68,7 +68,7 @@
 		366E72572EB05D1E00DC0753 /* MumbleConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MumbleConfig.swift; sourceTree = "<group>"; };
 		366E725A2EB0947000DC0753 /* CallCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallCoordinator.swift; sourceTree = "<group>"; };
 		366E725E2EB094AD00DC0753 /* IncomingCallContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingCallContext.swift; sourceTree = "<group>"; };
-		366E72602EB09D9900DC0753 /* MumbleClientDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MumbleClientDelegate.swift; sourceTree = "<group>"; };
+		366E72602EB09D9900DC0753 /* MumbleStateDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MumbleStateDelegate.swift; sourceTree = "<group>"; };
 		36DCB4612EA9FD8F00F7761B /* MumbleConnector+MakeClientSSLArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MumbleConnector+MakeClientSSLArray.swift"; sourceTree = "<group>"; };
 		36DCB4642EAA112A00F7761B /* CallManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallManager.swift; sourceTree = "<group>"; };
 		36DCB4662EAA17C100F7761B /* VoIPPushManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoIPPushManager.swift; sourceTree = "<group>"; };
@@ -128,7 +128,7 @@
 			children = (
 				366E72522EB05CEA00DC0753 /* MumbleCallCoordinator.swift */,
 				366E725A2EB0947000DC0753 /* CallCoordinator.swift */,
-				366E72602EB09D9900DC0753 /* MumbleClientDelegate.swift */,
+				366E72602EB09D9900DC0753 /* MumbleStateDelegate.swift */,
 				366E725E2EB094AD00DC0753 /* IncomingCallContext.swift */,
 			);
 			path = CallCoordinator;
@@ -383,7 +383,7 @@
 				36E982112EA8B3DB0058AE67 /* ChannelDisplayItem.swift in Sources */,
 				36DCB4622EA9FD9D00F7761B /* MumbleConnector+MakeClientSSLArray.swift in Sources */,
 				36E275E62E9F4E9900687354 /* AppDelegate.swift in Sources */,
-				366E72612EB09D9A00DC0753 /* MumbleClientDelegate.swift in Sources */,
+				366E72612EB09D9A00DC0753 /* MumbleStateDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
