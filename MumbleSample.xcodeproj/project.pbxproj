@@ -1,0 +1,787 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		3661C3652EA785B4004E7226 /* MumbleConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3661C3612EA785B3004E7226 /* MumbleConnector.swift */; };
+		366E72562EB05CEC00DC0753 /* MumbleCallCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366E72522EB05CEA00DC0753 /* MumbleCallCoordinator.swift */; };
+		366E72582EB05D2200DC0753 /* MumbleConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366E72572EB05D1E00DC0753 /* MumbleConfig.swift */; };
+		366E725B2EB0947000DC0753 /* CallCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366E725A2EB0947000DC0753 /* CallCoordinator.swift */; };
+		366E725F2EB094AD00DC0753 /* IncomingCallContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366E725E2EB094AD00DC0753 /* IncomingCallContext.swift */; };
+		366E72612EB09D9A00DC0753 /* MumbleStateDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366E72602EB09D9900DC0753 /* MumbleStateDelegate.swift */; };
+		36DCB4622EA9FD9D00F7761B /* MumbleConnector+MakeClientSSLArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36DCB4612EA9FD8F00F7761B /* MumbleConnector+MakeClientSSLArray.swift */; };
+		36DCB4652EAA112E00F7761B /* CallManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36DCB4642EAA112A00F7761B /* CallManager.swift */; };
+		36DCB4672EAA17C300F7761B /* VoIPPushManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36DCB4662EAA17C100F7761B /* VoIPPushManager.swift */; };
+		36E275A82E9F4E9900687354 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 36E275972E9F4E9900687354 /* Main.storyboard */; };
+		36E275A92E9F4E9900687354 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 36E275922E9F4E9900687354 /* Assets.xcassets */; };
+		36E275E12E9F4E9900687354 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E275992E9F4E9900687354 /* SceneDelegate.swift */; };
+		36E275E52E9F4E9900687354 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E2759A2E9F4E9900687354 /* ViewController.swift */; };
+		36E275E62E9F4E9900687354 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E275912E9F4E9900687354 /* AppDelegate.swift */; };
+		36E276102E9F4EB400687354 /* MumbleSampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E2760E2E9F4EB400687354 /* MumbleSampleTests.swift */; };
+		36E276142E9F4EC400687354 /* MumbleSampleUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E276122E9F4EC400687354 /* MumbleSampleUITestsLaunchTests.swift */; };
+		36E276152E9F4EC400687354 /* MumbleSampleUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E276112E9F4EC400687354 /* MumbleSampleUITests.swift */; };
+		36E2A4262E9F71C900687354 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36E2A4252E9F71C900687354 /* AudioToolbox.framework */; };
+		36E2A4282E9F71CF00687354 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36E2A4272E9F71CF00687354 /* CFNetwork.framework */; };
+		36E2A42A2E9F71D600687354 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36E2A4292E9F71D600687354 /* Security.framework */; };
+		36E2BD252E9F8B6800687354 /* libMumbleKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 36E2BD1B2E9F7F7500687354 /* libMumbleKit.a */; };
+		36E982112EA8B3DB0058AE67 /* ChannelDisplayItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E9820D2EA8B3DA0058AE67 /* ChannelDisplayItem.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		36E274072E9F4D4F00687354 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 36E272B82E9F4A5F00687354 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 36E273F02E9F4D4E00687354;
+			remoteInfo = MumbleSample;
+		};
+		36E274112E9F4D4F00687354 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 36E272B82E9F4A5F00687354 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 36E273F02E9F4D4E00687354;
+			remoteInfo = MumbleSample;
+		};
+		36E2BD1A2E9F7F7500687354 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 36E2BD152E9F7F7500687354 /* MumbleKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 28BCF2C1132AE3B40003AEC1;
+			remoteInfo = "MumbleKit (iOS)";
+		};
+		36E2BD232E9F8B6400687354 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 36E2BD152E9F7F7500687354 /* MumbleKit.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 28BCF2C0132AE3B40003AEC1;
+			remoteInfo = "MumbleKit (iOS)";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		3661C3612EA785B3004E7226 /* MumbleConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MumbleConnector.swift; sourceTree = "<group>"; };
+		366E72522EB05CEA00DC0753 /* MumbleCallCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MumbleCallCoordinator.swift; sourceTree = "<group>"; };
+		366E72572EB05D1E00DC0753 /* MumbleConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MumbleConfig.swift; sourceTree = "<group>"; };
+		366E725A2EB0947000DC0753 /* CallCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallCoordinator.swift; sourceTree = "<group>"; };
+		366E725E2EB094AD00DC0753 /* IncomingCallContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingCallContext.swift; sourceTree = "<group>"; };
+		366E72602EB09D9900DC0753 /* MumbleStateDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MumbleStateDelegate.swift; sourceTree = "<group>"; };
+		36DCB4612EA9FD8F00F7761B /* MumbleConnector+MakeClientSSLArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MumbleConnector+MakeClientSSLArray.swift"; sourceTree = "<group>"; };
+		36DCB4642EAA112A00F7761B /* CallManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallManager.swift; sourceTree = "<group>"; };
+		36DCB4662EAA17C100F7761B /* VoIPPushManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoIPPushManager.swift; sourceTree = "<group>"; };
+		36DCB4682EAA183A00F7761B /* MumbleSample.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MumbleSample.entitlements; sourceTree = "<group>"; };
+		36E273F12E9F4D4E00687354 /* MumbleSample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MumbleSample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		36E274062E9F4D4F00687354 /* MumbleSampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MumbleSampleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		36E274102E9F4D4F00687354 /* MumbleSampleUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MumbleSampleUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		36E275912E9F4E9900687354 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		36E275922E9F4E9900687354 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		36E275932E9F4E9900687354 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		36E275942E9F4E9900687354 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		36E275962E9F4E9900687354 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		36E275992E9F4E9900687354 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		36E2759A2E9F4E9900687354 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		36E2760E2E9F4EB400687354 /* MumbleSampleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MumbleSampleTests.swift; sourceTree = "<group>"; };
+		36E276112E9F4EC400687354 /* MumbleSampleUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MumbleSampleUITests.swift; sourceTree = "<group>"; };
+		36E276122E9F4EC400687354 /* MumbleSampleUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MumbleSampleUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		36E28F162E9F6CF200687354 /* Mumble-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Mumble-Bridging-Header.h"; sourceTree = "<group>"; };
+		36E2A4252E9F71C900687354 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		36E2A4272E9F71CF00687354 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		36E2A4292E9F71D600687354 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		36E2BD152E9F7F7500687354 /* MumbleKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = MumbleKit.xcodeproj; path = mumblekit/MumbleKit.xcodeproj; sourceTree = "<group>"; };
+		36E9820D2EA8B3DA0058AE67 /* ChannelDisplayItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelDisplayItem.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		36E273EE2E9F4D4E00687354 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				36E2BD252E9F8B6800687354 /* libMumbleKit.a in Frameworks */,
+				36E2A42A2E9F71D600687354 /* Security.framework in Frameworks */,
+				36E2A4282E9F71CF00687354 /* CFNetwork.framework in Frameworks */,
+				36E2A4262E9F71C900687354 /* AudioToolbox.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		36E274032E9F4D4F00687354 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		36E2740D2E9F4D4F00687354 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		366E72592EB0946800DC0753 /* CallCoordinator */ = {
+			isa = PBXGroup;
+			children = (
+				366E72522EB05CEA00DC0753 /* MumbleCallCoordinator.swift */,
+				366E725A2EB0947000DC0753 /* CallCoordinator.swift */,
+				366E72602EB09D9900DC0753 /* MumbleStateDelegate.swift */,
+				366E725E2EB094AD00DC0753 /* IncomingCallContext.swift */,
+			);
+			path = CallCoordinator;
+			sourceTree = "<group>";
+		};
+		36E272B72E9F4A5F00687354 = {
+			isa = PBXGroup;
+			children = (
+				36E2759B2E9F4E9900687354 /* MumbleSample */,
+				36E2760F2E9F4EB400687354 /* MumbleSampleTests */,
+				36E276132E9F4EC400687354 /* MumbleSampleUITests */,
+				36E273E62E9F4AE000687354 /* Frameworks */,
+				36E272C12E9F4A5F00687354 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		36E272C12E9F4A5F00687354 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				36E273F12E9F4D4E00687354 /* MumbleSample.app */,
+				36E274062E9F4D4F00687354 /* MumbleSampleTests.xctest */,
+				36E274102E9F4D4F00687354 /* MumbleSampleUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		36E273E62E9F4AE000687354 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				36E2A4292E9F71D600687354 /* Security.framework */,
+				36E2A4272E9F71CF00687354 /* CFNetwork.framework */,
+				36E2A4252E9F71C900687354 /* AudioToolbox.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		36E2759B2E9F4E9900687354 /* MumbleSample */ = {
+			isa = PBXGroup;
+			children = (
+				36DCB4682EAA183A00F7761B /* MumbleSample.entitlements */,
+				36E2BD152E9F7F7500687354 /* MumbleKit.xcodeproj */,
+				366E72592EB0946800DC0753 /* CallCoordinator */,
+				36E275912E9F4E9900687354 /* AppDelegate.swift */,
+				36E275922E9F4E9900687354 /* Assets.xcassets */,
+				36E275932E9F4E9900687354 /* Info.plist */,
+				36E275952E9F4E9900687354 /* LaunchScreen.storyboard */,
+				36E275972E9F4E9900687354 /* Main.storyboard */,
+				36E275992E9F4E9900687354 /* SceneDelegate.swift */,
+				36E28F162E9F6CF200687354 /* Mumble-Bridging-Header.h */,
+				36E2759A2E9F4E9900687354 /* ViewController.swift */,
+				36E9820D2EA8B3DA0058AE67 /* ChannelDisplayItem.swift */,
+				36DCB4642EAA112A00F7761B /* CallManager.swift */,
+				36DCB4662EAA17C100F7761B /* VoIPPushManager.swift */,
+				3661C3612EA785B3004E7226 /* MumbleConnector.swift */,
+				36DCB4612EA9FD8F00F7761B /* MumbleConnector+MakeClientSSLArray.swift */,
+				366E72572EB05D1E00DC0753 /* MumbleConfig.swift */,
+			);
+			path = MumbleSample;
+			sourceTree = "<group>";
+		};
+		36E2760F2E9F4EB400687354 /* MumbleSampleTests */ = {
+			isa = PBXGroup;
+			children = (
+				36E2760E2E9F4EB400687354 /* MumbleSampleTests.swift */,
+			);
+			path = MumbleSampleTests;
+			sourceTree = "<group>";
+		};
+		36E276132E9F4EC400687354 /* MumbleSampleUITests */ = {
+			isa = PBXGroup;
+			children = (
+				36E276112E9F4EC400687354 /* MumbleSampleUITests.swift */,
+				36E276122E9F4EC400687354 /* MumbleSampleUITestsLaunchTests.swift */,
+			);
+			path = MumbleSampleUITests;
+			sourceTree = "<group>";
+		};
+		36E2BD162E9F7F7500687354 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				36E2BD1B2E9F7F7500687354 /* libMumbleKit.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		36E273F02E9F4D4E00687354 /* MumbleSample */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 36E274192E9F4D4F00687354 /* Build configuration list for PBXNativeTarget "MumbleSample" */;
+			buildPhases = (
+				36E273ED2E9F4D4E00687354 /* Sources */,
+				36E273EE2E9F4D4E00687354 /* Frameworks */,
+				36E273EF2E9F4D4E00687354 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				36E2BD242E9F8B6400687354 /* PBXTargetDependency */,
+			);
+			name = MumbleSample;
+			packageProductDependencies = (
+			);
+			productName = MumbleSample;
+			productReference = 36E273F12E9F4D4E00687354 /* MumbleSample.app */;
+			productType = "com.apple.product-type.application";
+		};
+		36E274052E9F4D4F00687354 /* MumbleSampleTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 36E2741C2E9F4D4F00687354 /* Build configuration list for PBXNativeTarget "MumbleSampleTests" */;
+			buildPhases = (
+				36E274022E9F4D4F00687354 /* Sources */,
+				36E274032E9F4D4F00687354 /* Frameworks */,
+				36E274042E9F4D4F00687354 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				36E274082E9F4D4F00687354 /* PBXTargetDependency */,
+			);
+			name = MumbleSampleTests;
+			packageProductDependencies = (
+			);
+			productName = MumbleSampleTests;
+			productReference = 36E274062E9F4D4F00687354 /* MumbleSampleTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		36E2740F2E9F4D4F00687354 /* MumbleSampleUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 36E2741F2E9F4D4F00687354 /* Build configuration list for PBXNativeTarget "MumbleSampleUITests" */;
+			buildPhases = (
+				36E2740C2E9F4D4F00687354 /* Sources */,
+				36E2740D2E9F4D4F00687354 /* Frameworks */,
+				36E2740E2E9F4D4F00687354 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				36E274122E9F4D4F00687354 /* PBXTargetDependency */,
+			);
+			name = MumbleSampleUITests;
+			packageProductDependencies = (
+			);
+			productName = MumbleSampleUITests;
+			productReference = 36E274102E9F4D4F00687354 /* MumbleSampleUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		36E272B82E9F4A5F00687354 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2600;
+				LastUpgradeCheck = 2600;
+				TargetAttributes = {
+					36E273F02E9F4D4E00687354 = {
+						CreatedOnToolsVersion = 26.0.1;
+					};
+					36E274052E9F4D4F00687354 = {
+						CreatedOnToolsVersion = 26.0.1;
+						TestTargetID = 36E273F02E9F4D4E00687354;
+					};
+					36E2740F2E9F4D4F00687354 = {
+						CreatedOnToolsVersion = 26.0.1;
+						TestTargetID = 36E273F02E9F4D4E00687354;
+					};
+				};
+			};
+			buildConfigurationList = 36E272BB2E9F4A5F00687354 /* Build configuration list for PBXProject "MumbleSample" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+				English,
+			);
+			mainGroup = 36E272B72E9F4A5F00687354;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 36E272C12E9F4A5F00687354 /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 36E2BD162E9F7F7500687354 /* Products */;
+					ProjectRef = 36E2BD152E9F7F7500687354 /* MumbleKit.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				36E273F02E9F4D4E00687354 /* MumbleSample */,
+				36E274052E9F4D4F00687354 /* MumbleSampleTests */,
+				36E2740F2E9F4D4F00687354 /* MumbleSampleUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		36E2BD1B2E9F7F7500687354 /* libMumbleKit.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libMumbleKit.a;
+			remoteRef = 36E2BD1A2E9F7F7500687354 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXResourcesBuildPhase section */
+		36E273EF2E9F4D4E00687354 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				36E275A82E9F4E9900687354 /* Main.storyboard in Resources */,
+				36E275A92E9F4E9900687354 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		36E274042E9F4D4F00687354 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		36E2740E2E9F4D4F00687354 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		36E273ED2E9F4D4E00687354 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				36E275E12E9F4E9900687354 /* SceneDelegate.swift in Sources */,
+				36DCB4672EAA17C300F7761B /* VoIPPushManager.swift in Sources */,
+				3661C3652EA785B4004E7226 /* MumbleConnector.swift in Sources */,
+				36E275E52E9F4E9900687354 /* ViewController.swift in Sources */,
+				366E72562EB05CEC00DC0753 /* MumbleCallCoordinator.swift in Sources */,
+				366E725F2EB094AD00DC0753 /* IncomingCallContext.swift in Sources */,
+				366E725B2EB0947000DC0753 /* CallCoordinator.swift in Sources */,
+				366E72582EB05D2200DC0753 /* MumbleConfig.swift in Sources */,
+				36DCB4652EAA112E00F7761B /* CallManager.swift in Sources */,
+				36E982112EA8B3DB0058AE67 /* ChannelDisplayItem.swift in Sources */,
+				36DCB4622EA9FD9D00F7761B /* MumbleConnector+MakeClientSSLArray.swift in Sources */,
+				36E275E62E9F4E9900687354 /* AppDelegate.swift in Sources */,
+				366E72612EB09D9A00DC0753 /* MumbleStateDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		36E274022E9F4D4F00687354 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				36E276102E9F4EB400687354 /* MumbleSampleTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		36E2740C2E9F4D4F00687354 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				36E276142E9F4EC400687354 /* MumbleSampleUITestsLaunchTests.swift in Sources */,
+				36E276152E9F4EC400687354 /* MumbleSampleUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		36E274082E9F4D4F00687354 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 36E273F02E9F4D4E00687354 /* MumbleSample */;
+			targetProxy = 36E274072E9F4D4F00687354 /* PBXContainerItemProxy */;
+		};
+		36E274122E9F4D4F00687354 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 36E273F02E9F4D4E00687354 /* MumbleSample */;
+			targetProxy = 36E274112E9F4D4F00687354 /* PBXContainerItemProxy */;
+		};
+		36E2BD242E9F8B6400687354 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "MumbleKit (iOS)";
+			targetProxy = 36E2BD232E9F8B6400687354 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		36E275952E9F4E9900687354 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				36E275942E9F4E9900687354 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		36E275972E9F4E9900687354 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				36E275962E9F4E9900687354 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		36E272EC2E9F4A6100687354 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 6GH2ZWT255;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		36E272ED2E9F4A6100687354 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 6GH2ZWT255;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		36E2741A2E9F4D4F00687354 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = MumbleSample/MumbleSample.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6GH2ZWT255;
+				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/MumbleSample/mumblekit/src/**",
+					"$(PROJECT_DIR)/MumbleSample/mumblekit/src/MumbleKit/**",
+					"$(PROJECT_DIR)/MumbleSample/mumblekit/3rdparty/protobuf/src/runtime/Classes/**",
+				);
+				INFOPLIST_FILE = MumbleSample/Info.plist;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = VOIP;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CFLAGS = "-I$(PROJECT_DIR)/MumbleSample/mumblekit/src/MumbleKit";
+				OTHER_LDFLAGS = (
+					"-lc++",
+					"-ObjC",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = tw.com.1111.goodjobs2014;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "MumbleSample/Mumble-Bridging-Header.h";
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		36E2741B2E9F4D4F00687354 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = MumbleSample/MumbleSample.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6GH2ZWT255;
+				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/MumbleSample/mumblekit/src/**",
+					"$(PROJECT_DIR)/MumbleSample/mumblekit/src/MumbleKit/**",
+					"$(PROJECT_DIR)/MumbleSample/mumblekit/3rdparty/protobuf/src/runtime/Classes/**",
+				);
+				INFOPLIST_FILE = MumbleSample/Info.plist;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = VOIP;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_CFLAGS = "-I$(PROJECT_DIR)/MumbleSample/mumblekit/src/MumbleKit";
+				OTHER_LDFLAGS = (
+					"-lc++",
+					"-ObjC",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = tw.com.1111.goodjobs2014;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "MumbleSample/Mumble-Bridging-Header.h";
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		36E2741D2E9F4D4F00687354 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6GH2ZWT255;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ehun.CombineUser.MumbleSampleTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MumbleSample.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/MumbleSample";
+			};
+			name = Debug;
+		};
+		36E2741E2E9F4D4F00687354 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6GH2ZWT255;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ehun.CombineUser.MumbleSampleTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MumbleSample.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/MumbleSample";
+			};
+			name = Release;
+		};
+		36E274202E9F4D4F00687354 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6GH2ZWT255;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ehun.CombineUser.MumbleSampleUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = MumbleSample;
+			};
+			name = Debug;
+		};
+		36E274212E9F4D4F00687354 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6GH2ZWT255;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ehun.CombineUser.MumbleSampleUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = MumbleSample;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		36E272BB2E9F4A5F00687354 /* Build configuration list for PBXProject "MumbleSample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				36E272EC2E9F4A6100687354 /* Debug */,
+				36E272ED2E9F4A6100687354 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		36E274192E9F4D4F00687354 /* Build configuration list for PBXNativeTarget "MumbleSample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				36E2741A2E9F4D4F00687354 /* Debug */,
+				36E2741B2E9F4D4F00687354 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		36E2741C2E9F4D4F00687354 /* Build configuration list for PBXNativeTarget "MumbleSampleTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				36E2741D2E9F4D4F00687354 /* Debug */,
+				36E2741E2E9F4D4F00687354 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		36E2741F2E9F4D4F00687354 /* Build configuration list for PBXNativeTarget "MumbleSampleUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				36E274202E9F4D4F00687354 /* Debug */,
+				36E274212E9F4D4F00687354 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 36E272B82E9F4A5F00687354 /* Project object */;
+}
